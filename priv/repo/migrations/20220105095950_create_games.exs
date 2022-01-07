@@ -4,6 +4,7 @@ defmodule Quizzaz.Repo.Migrations.CreateGames do
   def change do
     create table(:games) do
       add :name, :string
+      add :type, :string
       add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()

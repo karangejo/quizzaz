@@ -88,5 +88,12 @@ defmodule QuizzazWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+
+    live "games", GameLive.Index, :index
+    live "/games/new", GameLive.Index, :new
+    live "/games/:id/edit", GameLive.Index, :edit
+
+    live "/games/:id", GameLive.Show, :show
+    live "/games/:id/show/edit", GameLive.Show, :edit
   end
 end
