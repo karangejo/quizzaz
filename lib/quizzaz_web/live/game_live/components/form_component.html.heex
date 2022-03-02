@@ -1,0 +1,152 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="game-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+    <%= error_tag f, :name %>
+
+    <%= label f, :type %>
+    <%= select f, :type, Quizzaz.Games.Game.game_types() %>
+    <%= error_tag f, :type %>
+    
+    <!--<div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div> -->
+  </.form>
+
+
+  <.form
+    let={f}
+    for={@add_question_changeset}
+    id="add-question-form"
+    phx-target={@myself}
+    phx-submit="choose_question_type">
+
+    <%= select f, :question_type, Quizzaz.Games.Question.question_types(), prompt: "select question type" %>
+    <div>
+      <%= submit "Add new question", phx_disable_with: "adding..." %>
+    </div>
+  </.form>
+
+  <%= if not is_nil(@current_question_type) do %>
+    <%= case @current_question_type do %>
+      <% "multiple_choice" -> %>
+        <.form
+          let={f}
+          for={@current_question_changeset}
+          id="add-mc-question-form"
+          phx-target={@myself}
+          phx-submit="add_question">
+        
+          <%= label f, :prompt %>
+          <%= text_input f, :prompt %>
+          <%= error_tag f, :prompt %>
+          
+          <%= label f, :choice_1%>
+          <%= text_input f, :choice_1 %>
+          <%= error_tag f, :choice_1 %>
+          
+          <%= label f, :choice_2%>
+          <%= text_input f, :choice_2 %>
+          <%= error_tag f, :choice_2 %>
+          
+          <%= label f, :choice_3%>
+          <%= text_input f, :choice_3 %>
+          <%= error_tag f, :choice_3 %>
+          
+          <%= label f, :choice_4%>
+          <%= text_input f, :choice_4 %>
+          <%= error_tag f, :choice_4 %>
+    
+          <%= label f, :answer %>
+          <%= select f, :answer, [1, 2, 3, 4] , prompt: "select answer" %>
+          <%= error_tag f, :answer %>
+
+          <div>
+            <%= submit "Add question", phx_disable_with: "adding..." %>
+          </div>
+        </.form>
+      <% "scramble_letters" -> %>
+        <.form
+          let={f}
+          for={@current_question_changeset}
+          id="add-sl-question-form"
+          phx-target={@myself}
+          phx-submit="add_question">
+        
+          <%= label f, :answer %>
+          <%= text_input f, :answer %>
+          <%= error_tag f, :answer %>
+          
+          <div>
+            <%= submit "Add question", phx_disable_with: "adding..." %>
+          </div>
+        </.form>
+      <% "scramble_words" -> %>
+        <.form
+          let={f}
+          for={@current_question_changeset}
+          id="add-sw-question-form"
+          phx-target={@myself}
+          phx-submit="add_question">
+        
+          <%= label f, :answer_list %>
+          <%= text_input f, :answer_list %>
+          <%= error_tag f, :answer_list %>
+          
+          <div>
+            <%= submit "Add question", phx_disable_with: "adding..." %>
+          </div>
+        </.form>
+      <% "open_ended" -> %>
+        <.form
+          let={f}
+          for={@current_question_changeset}
+          id="add-oe-question-form"
+          phx-target={@myself}
+          phx-submit="add_question">
+        
+          <%= label f, :prompt %>
+          <%= text_input f, :prompt %>
+          <%= error_tag f, :prompt %>
+          
+          <div>
+            <%= submit "Add question", phx_disable_with: "adding..." %>
+          </div>
+        </.form>
+      <% _ -> %>
+        <% nil %>
+    <% end %>
+  <% end %>
+
+  <%= if @questions != [] do %>
+    <%= for {question, index} <- Enum.with_index(@questions, 1) do %>
+      <%= case question do %>
+        <% %{answer: _answer, prompt: prompt, choices: _choices} -> %>
+          <p><%= index %></p> 
+          <p><%= prompt %></p>
+        <% %{answer: answer, scrambled: _scrambled} -> %>
+          <p><%= index %></p> 
+          <p><%= answer %></p>
+        <% %{answer_list: answer_list, scrambled_list: _scrambled} -> %>
+          <p><%= index %></p> 
+          <p><%= Enum.join(answer_list, " ") %></p>
+        <% %{prompt: prompt} -> %>
+          <p><%= index %></p> 
+          <p><%= prompt %></p>
+        <% _ ->%>
+          <% nil %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <button phx-click="save" phx-target={@myself} >Save Game</button>
+</div>

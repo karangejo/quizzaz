@@ -5,8 +5,10 @@ defmodule Quizzaz.Games do
 
   import Ecto.Query, warn: false
   alias Quizzaz.Repo
+  alias Ecto.Multi
 
   alias Quizzaz.Games.Game
+  alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords}
 
   @doc """
   Returns the list of games.
@@ -19,6 +21,12 @@ defmodule Quizzaz.Games do
   """
   def list_games do
     Repo.all(Game)
+  end
+
+  def list_games_by_user(user_id) do
+    Game
+    |> where(user_id: ^user_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +43,12 @@ defmodule Quizzaz.Games do
       ** (Ecto.NoResultsError)
 
   """
-  def get_game!(id), do: Repo.get!(Game, id)
+  def get_game!(id) do
+    Game
+    |> where(id: ^id)
+    |> preload(:questions)
+    |> Repo.one()
+  end
 
   @doc """
   Creates a game.
@@ -100,5 +113,82 @@ defmodule Quizzaz.Games do
   """
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
+  end
+
+  # Questions
+  alias Quizzaz.Games.Question
+
+  @doc """
+  Creates a question.
+
+  ## Examples
+
+      iex> create_question(%{field: value})
+      {:ok, %Question{}}
+
+      iex> create_game(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_questions(game_id, questions) do
+    questions
+    |> Enum.reduce(Multi.new(), fn question, acc ->
+      acc
+      |> Multi.insert(
+        :insert_question,
+        %Question{}
+        |> Question.changeset(%{game_id: game_id, content: question})
+      )
+    end)
+    |> Repo.transaction()
+  end
+
+  def create_question(attrs \\ %{}) do
+    %Question{}
+    |> Question.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_multiple_choice_question(answer, prompt, choices, game_id)
+      when is_integer(answer) and is_binary(prompt) and is_list(choices) do
+    %Question{}
+    |> Question.changeset(%{
+      game_id: game_id,
+      content: %{answer: answer, prompt: prompt, choices: choices}
+    })
+    |> Repo.insert()
+  end
+
+  def create_open_ended_question(prompt, game_id) when is_binary(prompt) do
+    %Question{}
+    |> Question.changeset(%{
+      game_id: game_id,
+      content: %{prompt: prompt}
+    })
+    |> Repo.insert()
+  end
+
+  def create_scramble_letters_question(answer, game_id) when is_binary(answer) do
+    %Question{}
+    |> Question.changeset(%{
+      game_id: game_id,
+      content: ScrambleLetters.create_params(answer)
+    })
+    |> Repo.insert()
+  end
+
+  def create_scramble_words_questions(answer_list, game_id) when is_list(answer_list) do
+    %Question{}
+    |> Question.changeset(%{
+      game_id: game_id,
+      content: ScrambleWords.create_params(answer_list)
+    })
+    |> Repo.insert()
+  end
+
+  def update_question(%Question{} = question, attrs) do
+    question
+    |> Question.changeset(attrs)
+    |> Repo.update()
   end
 end

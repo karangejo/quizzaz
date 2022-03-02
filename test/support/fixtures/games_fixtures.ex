@@ -11,7 +11,8 @@ defmodule Quizzaz.GamesFixtures do
     {:ok, game} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some name",
+        type: :public
       })
       |> Quizzaz.Games.create_game()
 

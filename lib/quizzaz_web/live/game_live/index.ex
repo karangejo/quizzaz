@@ -3,10 +3,16 @@ defmodule QuizzazWeb.GameLive.Index do
 
   alias Quizzaz.Games
   alias Quizzaz.Games.Game
+  alias Quizzaz.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :games, list_games())}
+  def mount(_params, %{"user_token" => user_token}, socket) do
+    user = Accounts.get_user_by_session_token(user_token)
+
+    {:ok,
+     socket
+     |> assign(:user_id, user.id)
+     |> assign(:games, list_games_by_user(user.id))}
   end
 
   @impl true
@@ -37,10 +43,10 @@ defmodule QuizzazWeb.GameLive.Index do
     game = Games.get_game!(id)
     {:ok, _} = Games.delete_game(game)
 
-    {:noreply, assign(socket, :games, list_games())}
+    {:noreply, assign(socket, :games, list_games_by_user(socket.assigns.user_id))}
   end
 
-  defp list_games do
-    Games.list_games()
+  defp list_games_by_user(user_id) do
+    Games.list_games_by_user(user_id)
   end
 end

@@ -1,12 +1,12 @@
 defmodule Quizzaz.GamesTest do
   use Quizzaz.DataCase
+  import Quizzaz.GamesFixtures
 
   alias Quizzaz.Games
+  alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords}
 
   describe "games" do
     alias Quizzaz.Games.Game
-
-    import Quizzaz.GamesFixtures
 
     @invalid_attrs %{name: nil}
 
@@ -21,7 +21,7 @@ defmodule Quizzaz.GamesTest do
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{name: "some name"}
+      valid_attrs = %{name: "some name", type: :public}
 
       assert {:ok, %Game{} = game} = Games.create_game(valid_attrs)
       assert game.name == "some name"
@@ -54,6 +54,77 @@ defmodule Quizzaz.GamesTest do
     test "change_game/1 returns a game changeset" do
       game = game_fixture()
       assert %Ecto.Changeset{} = Games.change_game(game)
+    end
+  end
+
+  describe "questions" do
+    test "can create a mutiple_choice_question" do
+      game = game_fixture()
+
+      mutiple_choice_question = %{
+        answer: 2,
+        prompt: "which animal is the largest?",
+        choices: ["cat", "dog", "elephant"]
+      }
+
+      assert {:ok, question} =
+               Games.create_question(%{game_id: game.id, content: mutiple_choice_question})
+
+      assert %Quizzaz.Games.Question{
+               content: %Quizzaz.Games.Questions.MultipleChoice{
+                 answer: 2,
+                 choices: ["cat", "dog", "elephant"],
+                 id: nil,
+                 prompt: "which animal is the largest?"
+               }
+             } = question
+    end
+
+    test "can create an open ended question" do
+      game = game_fixture()
+
+      open_ended_question = %{
+        prompt: "What do you think about cats?"
+      }
+
+      assert {:ok, question} =
+               Games.create_question(%{game_id: game.id, content: open_ended_question})
+
+      assert %Quizzaz.Games.Question{
+               content: %Quizzaz.Games.Questions.OpenEnded{
+                 prompt: "What do you think about cats?"
+               }
+             } = question
+    end
+
+    test "can create a scramble letters question" do
+      game = game_fixture()
+
+      scramble_letters_question = ScrambleLetters.create_params("kitten")
+
+      assert {:ok, question} =
+               Games.create_question(%{game_id: game.id, content: scramble_letters_question})
+
+      assert %Quizzaz.Games.Question{
+               content: %Quizzaz.Games.Questions.ScrambleLetters{
+                 answer: "kitten"
+               }
+             } = question
+    end
+
+    test "can create a scramble words question" do
+      game = game_fixture()
+
+      scramble_wwords_question = ScrambleWords.create_params(~w(kittens are adorable))
+
+      assert {:ok, question} =
+               Games.create_question(%{game_id: game.id, content: scramble_wwords_question})
+
+      assert %Quizzaz.Games.Question{
+               content: %Quizzaz.Games.Questions.ScrambleWords{
+                 answer_list: ["kittens", "are", "adorable"]
+               }
+             } = question
     end
   end
 end

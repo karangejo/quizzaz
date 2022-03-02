@@ -15,7 +15,11 @@ defmodule Quizzaz.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Quizzaz.PubSub},
       # Start the Endpoint (http/https)
-      QuizzazWeb.Endpoint
+      QuizzazWeb.Endpoint,
+      # registry for GameSessions
+      {Registry, keys: :unique, name: GameSessionRegistry},
+      # dynamic supervisor for game sessions
+      {DynamicSupervisor, strategy: :one_for_one, name: GameSessionSupervisor}
       # Start a worker by calling: Quizzaz.Worker.start_link(arg)
       # {Quizzaz.Worker, arg}
     ]

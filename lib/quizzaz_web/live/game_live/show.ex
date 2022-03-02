@@ -2,6 +2,8 @@ defmodule QuizzazWeb.GameLive.Show do
   use QuizzazWeb, :live_view
 
   alias Quizzaz.Games
+  alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords, MultipleChoice, OpenEnded}
+  alias Quizzaz.Games.Question
 
   @impl true
   def mount(_params, _session, socket) do

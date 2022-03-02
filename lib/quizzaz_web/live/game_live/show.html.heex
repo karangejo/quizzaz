@@ -18,7 +18,26 @@
   <li>
     <strong>Name:</strong>
     <%= @game.name %>
+    <%= for {%Question{content: content}, index} <- Enum.with_index(@game.questions) do %>
+      <%= case content do %>
+        <% %MultipleChoice{answer: _answer, prompt: prompt, choices: _choices} -> %>
+          <p><%= index %></p> 
+          <p><%= prompt %></p>
+        <% %ScrambleLetters{answer: answer, scrambled: _scrambled} -> %>
+          <p><%= index %></p> 
+          <p><%= answer %></p>
+        <% %ScrambleWords{answer_list: answer_list, scrambled_list: _scrambled} -> %>
+          <p><%= index %></p> 
+          <p><%= Enum.join(answer_list, " ") %></p>
+        <% %OpenEnded{prompt: prompt} -> %>
+          <p><%= index %></p> 
+          <p><%= prompt %></p>
+        <% _ ->%>
+          <% nil %>
+      <% end %>
+    <% end %>
   </li>
+
 
 </ul>
 
