@@ -2,17 +2,16 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   use GenServer
 
   alias Quizzaz.GameSessions.GameSession
-  alias Quizzaz.GameSessions.GameSessionServer
 
   # client
-  def start_link(%GameSession{} = game_session, name) do
+  def start_link({%GameSession{} = game_session, name}) do
     GenServer.start_link(__MODULE__, game_session, name: via_tuple(name))
   end
 
   def start_game_session(%GameSession{} = game_session, name) do
     DynamicSupervisor.start_child(
       GameSessionSupervisor,
-      {GameSessionServer, [game_session, name]}
+      {__MODULE__, {game_session, name}}
     )
   end
 
@@ -20,6 +19,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:answer_question, player_name, answer})
   end
 
+  @spec start_game_wait_for_players(any) :: any
   def start_game_wait_for_players(name) do
     GenServer.call(via_tuple(name), :start_game_wait_for_players)
   end
@@ -55,7 +55,9 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:player_join, player}, _from, game_session) do
-    {:reply, {:ok, game_session.state}, GameSession.add_player(game_session, player)}
+    IO.inspect(player)
+    updated_session = GameSession.add_player(game_session, player) |> IO.inspect()
+    {:reply, {:ok, game_session.state}, updated_session}
   end
 
   def handle_call(:get_current_state, _from, game_session) do

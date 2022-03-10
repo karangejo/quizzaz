@@ -1,0 +1,13 @@
+<div>
+	<.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
+		<%= label f, :session_id %>
+  		<%= text_input f, :session_id%>
+  		<%= error_tag f, :session_id%>
+		
+		<%= label f, :name %>
+  		<%= text_input f, :name%>
+  		<%= error_tag f, :name%>
+
+  		<%= submit "Join Game" %>
+	</.form>
+</div>

@@ -1,0 +1,9 @@
+<div>
+	<h3>To join this game please enter the following code:</h3> 
+	<p><%= @session_id %></p>
+
+	<h3>Players:</h3>
+	<%= for player <- @game_session.players do %>
+		<p><%= player.name %></p>
+	<% end %>
+</div>

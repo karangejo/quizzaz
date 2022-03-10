@@ -10,4 +10,12 @@ defmodule Quizzaz.GameSessions.Player do
     score: 0,
     answers: []
   ]
+
+  def create_new_player(name) do
+    %__MODULE__{
+      name: name,
+      score: 0,
+      answers: []
+    }
+  end
 end

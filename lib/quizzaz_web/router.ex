@@ -71,8 +71,8 @@ defmodule QuizzazWeb.Router do
     get "/users/reset_password/:token", UserResetPasswordController, :edit
     put "/users/reset_password/:token", UserResetPasswordController, :update
 
-    live "/host/:id", HostLive.Index, :index
-    live "play/:game_token", PlayLive.Index, :index
+    live "/host/:game_id/:session_id/:interval", HostLive.Index, :index
+    live "/play", PlayLive.Index, :index
   end
 
   scope "/", QuizzazWeb do
