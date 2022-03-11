@@ -1,7 +1,7 @@
 defmodule Quizzaz.GameSessions.GameSessionServer do
   use GenServer
 
-  alias Quizzaz.GameSessions.GameSession
+  alias Quizzaz.GameSessions.{GameSession, GameSessionPubSub}
 
   # client
   def start_link({%GameSession{} = game_session, name}) do
@@ -19,7 +19,6 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:answer_question, player_name, answer})
   end
 
-  @spec start_game_wait_for_players(any) :: any
   def start_game_wait_for_players(name) do
     GenServer.call(via_tuple(name), :start_game_wait_for_players)
   end
@@ -33,7 +32,11 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def start_next_question(name) do
-    GenServer.call(via_tuple(name), :start_next_question)
+    GenServer.call(via_tuple(name), {:start_next_question, name})
+  end
+
+  def player_name_exists?(name, player_name) do
+    GenServer.call(via_tuple(name), {:player_name_exists, player_name})
   end
 
   defp via_tuple(name) do
@@ -55,8 +58,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:player_join, player}, _from, game_session) do
-    IO.inspect(player)
-    updated_session = GameSession.add_player(game_session, player) |> IO.inspect()
+    updated_session = GameSession.add_player(game_session, player)
     {:reply, {:ok, game_session.state}, updated_session}
   end
 
@@ -64,16 +66,21 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     {:reply, {:ok, game_session}, game_session}
   end
 
-  def handle_call(:start_next_question, _from, game_session) do
-    start_question_timer(game_session)
-    {:reply, {:ok, game_session.state}, GameSession.next_question(game_session)}
+  def handle_call({:start_next_question, name}, _from, game_session) do
+    start_question_timer(game_session, name)
+    {:reply, {:ok, game_session}, GameSession.next_question(game_session)}
   end
 
-  def handle_info(:question_finished, game_session) do
+  def handle_call({:player_name_exists, player_name}, _from, game_session) do
+    {:reply, {:ok, GameSession.player_name_exists?(game_session, player_name)}, game_session}
+  end
+
+  def handle_info({:question_finished, name}, game_session) do
+    GameSessionPubSub.broadcast_to_session(name, :pause_game)
     {:noreply, GameSession.pause_game(game_session)}
   end
 
-  defp start_question_timer(%GameSession{question_time_interval: interval}) do
-    Process.send_after(self(), :question_finished, interval)
+  defp start_question_timer(%GameSession{question_time_interval: interval}, name) do
+    Process.send_after(self(), {:question_finished, name}, interval)
   end
 end

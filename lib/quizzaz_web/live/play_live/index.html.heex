@@ -1,13 +1,21 @@
 <div>
-	<.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
-		<%= label f, :session_id %>
-  		<%= text_input f, :session_id%>
-  		<%= error_tag f, :session_id%>
-		
-		<%= label f, :name %>
-  		<%= text_input f, :name%>
-  		<%= error_tag f, :name%>
+	<%= case @state do %>
+		<% :not_joined -> %>
+			<.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
+				<%= label f, :session_id %>
+ 		 		<%= text_input f, :session_id%>
+ 		 		<%= error_tag f, :session_id%>
 
-  		<%= submit "Join Game" %>
-	</.form>
+				<%= label f, :name %>
+ 		 		<%= text_input f, :name%>
+ 		 		<%= error_tag f, :name%>
+
+		  		<%= submit "Join Game" %>
+			</.form>
+		<% :joined -> %>
+			<h3>You have joined the game!</h3>
+			<h3>Please wait for the game to start</h3>
+			<p><%= @session_id %></p>
+			<p><%= @name %></p>
+	<% end %>
 </div>

@@ -6,7 +6,13 @@ defmodule QuizzazWeb.PlayLive.Index do
 
   def mount(_params, _session, socket) do
     changeset = JoinSession.changeset(%{})
-    {:ok, socket |> assign(:join_changeset, changeset)}
+
+    {:ok,
+     socket
+     |> assign(:state, :not_joined)
+     |> assign(:session_id, nil)
+     |> assign(:name, nil)
+     |> assign(:join_changeset, changeset)}
   end
 
   def handle_event("validate", %{"join_session" => join_session}, socket) do
@@ -23,38 +29,48 @@ defmodule QuizzazWeb.PlayLive.Index do
         %{"join_session" => %{"session_id" => session_id, "name" => name} = join_session},
         socket
       ) do
-        IO.inspect(join_session)
     changeset =
       join_session
       |> JoinSession.changeset()
 
+    {:ok, name_already_exists?} = GameSessionServer.player_name_exists?(session_id, name)
+
     updated_socket =
       if changeset.valid? do
-        if RunningSessionsServer.session_exists?(session_id) do
-          IO.puts("valid and exists")
-          GameSessionPubSub.subscribe_to_session(session_id)
-          player = Player.create_new_player(name)
-          GameSessionServer.player_join(session_id, player) |> IO.inspect()
-          GameSessionPubSub.broadcast_to_session(session_id, :player_joined)
+        if not name_already_exists? do
+          if RunningSessionsServer.session_exists?(session_id) do
+            GameSessionPubSub.subscribe_to_session(session_id)
+            player = Player.create_new_player(name)
+            GameSessionServer.player_join(session_id, player) |> IO.inspect()
+            GameSessionPubSub.broadcast_to_session(session_id, :player_joined)
 
-          socket
-          |> assign(:state, :joined)
-          |> assign(:join_changeset, changeset)
+            socket
+            |> assign(:state, :joined)
+            |> assign(:session_id, session_id)
+            |> assign(:name, name)
+            |> assign(:join_changeset, changeset)
+          else
+            socket
+            |> put_flash(:error, "This game does not exist")
+            |> assign(:join_changeset, changeset)
+          end
         else
-          IO.puts("valid not exists")
-
           socket
-          |> put_flash(:error, "This game does not exist")
+          |> put_flash(:error, "This name already exists")
           |> assign(:join_changeset, changeset)
         end
       else
-        IO.puts("not valid")
-
         socket
         |> put_flash(:error, "Invalid input")
         |> assign(:join_changeset, changeset |> Map.put(:action, :validate))
       end
 
     {:noreply, updated_socket}
+  end
+
+  def handle_info(:start_game, socket) do
+    {:noreply,
+     socket
+     |> assign(:state, :started)}
   end
 end

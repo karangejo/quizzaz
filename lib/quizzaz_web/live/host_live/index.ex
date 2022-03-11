@@ -33,9 +33,18 @@ defmodule QuizzazWeb.HostLive.Index do
 
     {:ok,
      socket
+     |> assign(:state, :waiting_for_players)
      |> assign(:game_session, game_session)
      |> assign(:session_id, session_id)
      |> assign(:game_id, game_id)}
+  end
+
+  def handle_event("start-game", _params, socket) do
+    GameSessionPubSub.broadcast_to_session(socket.assigns.session_id, :start_game)
+    GameSessionServer.start_next_question(socket.assigns.session_id)
+    {:noreply,
+     socket
+     |> assign(:state, :playing)}
   end
 
   def handle_info(:player_joined, socket) do
