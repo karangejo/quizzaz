@@ -15,6 +15,7 @@ defmodule QuizzazWeb.HostLive.Index do
         _session,
         socket
       ) do
+    {integer_interval, _} = Integer.parse(interval)
     GameSessionPubSub.subscribe_to_session(session_id)
 
     {:ok, game_session} =
@@ -23,7 +24,7 @@ defmodule QuizzazWeb.HostLive.Index do
       else
         game = Games.get_game!(game_id)
 
-        with {:ok, session} <- GameSession.create_game_session(game, interval),
+        with {:ok, session} <- GameSession.create_game_session(game, integer_interval * 1000),
              {:ok, _pid} <- GameSessionServer.start_game_session(session, session_id),
              {:ok, _state} <- GameSessionServer.start_game_wait_for_players(session_id),
              :ok <- RunningSessionsServer.put_session_name(session_id) do
@@ -36,12 +37,14 @@ defmodule QuizzazWeb.HostLive.Index do
      |> assign(:state, :waiting_for_players)
      |> assign(:game_session, game_session)
      |> assign(:session_id, session_id)
+     |> assign(:question, %{})
      |> assign(:game_id, game_id)}
   end
 
   def handle_event("start-game", _params, socket) do
     GameSessionPubSub.broadcast_to_session(socket.assigns.session_id, :start_game)
     GameSessionServer.start_next_question(socket.assigns.session_id)
+
     {:noreply,
      socket
      |> assign(:state, :playing)}
@@ -50,5 +53,17 @@ defmodule QuizzazWeb.HostLive.Index do
   def handle_info(:player_joined, socket) do
     {:ok, updated_session} = GameSessionServer.get_current_state(socket.assigns.session_id)
     {:noreply, socket |> assign(:game_session, updated_session)}
+  end
+
+  def handle_info({:new_question, question}, socket) do
+    {:noreply, socket |> assign(:question, question)}
+  end
+
+  def handle_info(:pause_game, socket) do
+    {:noreply, socket |> assign(:state, :paused)}
+  end
+
+  def handle_info(_, socket) do
+    {:noreply, socket}
   end
 end

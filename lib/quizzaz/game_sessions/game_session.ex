@@ -107,6 +107,10 @@ defmodule Quizzaz.GameSessions.GameSession do
     game_session.players |> Enum.map(fn p -> p.name end) |> Enum.member?(player_name)
   end
 
+  def get_current_question(%__MODULE__{} = game_session) do
+    Enum.at(game_session.questions, game_session.current_question)
+  end
+
   defp correct_answer?(answer, %__MODULE__{} = game_session) do
     question = Enum.at(game_session.questions, game_session.current_question)
 

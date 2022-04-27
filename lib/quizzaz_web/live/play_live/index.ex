@@ -12,6 +12,7 @@ defmodule QuizzazWeb.PlayLive.Index do
      |> assign(:state, :not_joined)
      |> assign(:session_id, nil)
      |> assign(:name, nil)
+     |> assign(:question, %{})
      |> assign(:join_changeset, changeset)}
   end
 
@@ -68,9 +69,26 @@ defmodule QuizzazWeb.PlayLive.Index do
     {:noreply, updated_socket}
   end
 
+  def handle_event("answer_question", %{"answer" => answer}, socket) do
+    GameSessionServer.answer_question(socket.assigns.session_id, socket.assigns.name, answer)
+    {:noreply, socket |> assign(:state, :answered)}
+  end
+
   def handle_info(:start_game, socket) do
     {:noreply,
      socket
-     |> assign(:state, :started)}
+     |> assign(:state, :playing)}
+  end
+
+  def handle_info({:new_question, question}, socket) do
+    {:noreply, socket |> assign(:question, question)}
+  end
+
+  def handle_info(:pause_game, socket) do
+    {:noreply, socket |> assign(:state, :paused)}
+  end
+
+  def handle_info(_, socket) do
+    {:noreply, socket}
   end
 end

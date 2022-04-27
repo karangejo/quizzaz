@@ -70,9 +70,6 @@ defmodule QuizzazWeb.Router do
     post "/users/reset_password", UserResetPasswordController, :create
     get "/users/reset_password/:token", UserResetPasswordController, :edit
     put "/users/reset_password/:token", UserResetPasswordController, :update
-
-    live "/host/:game_id/:session_id/:interval", HostLive.Index, :index
-    live "/play", PlayLive.Index, :index
   end
 
   scope "/", QuizzazWeb do
@@ -98,5 +95,8 @@ defmodule QuizzazWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+
+    live "/host/:game_id/:session_id/:interval", HostLive.Index, :index
+    live "/play", PlayLive.Index, :index
   end
 end

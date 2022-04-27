@@ -17,5 +17,25 @@
 			<h3>Please wait for the game to start</h3>
 			<p><%= @session_id %></p>
 			<p><%= @name %></p>
+		<% :playing -> %>
+			<h3>You are playing the game</h3>
+			<%= case @question do %>
+				<% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
+					<%= for {choice, i} <- Enum.with_index(q.choices) do %>
+						<button phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
+					<% end %>
+				<% %Quizzaz.Games.Questions.OpenEnded{} -> %>
+					<h4>Display text input</h4>
+				<% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+					<h4>Display scrambled letters</h4>
+				<% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+					<h4>Display scrambled list</h4>
+				<% _ -> %>
+					<h4>Waiting for question</h4>
+			<% end %>
+		<% :answered -> %>
+			<h3>Great Job!</h3>
+		<% :paused -> %>
+			<h3>Game is paused</h3>
 	<% end %>
 </div>

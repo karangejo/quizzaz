@@ -50,7 +50,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:answer_question, player_name, answer}, _from, game_session) do
-    {:reply, {:ok, game_session.state}, answer_question(game_session, player_name, answer)}
+    {:reply, {:ok, game_session.state}, GameSession.answer_question(game_session, player_name, answer)}
   end
 
   def handle_call(:start_game_wait_for_players, _from, game_session) do
@@ -67,8 +67,15 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:start_next_question, name}, _from, game_session) do
+    updated_game_session = GameSession.next_question(game_session)
+
+    GameSessionPubSub.broadcast_to_session(
+      name,
+      {:new_question, GameSession.get_current_question(updated_game_session)}
+    )
+
     start_question_timer(game_session, name)
-    {:reply, {:ok, game_session}, GameSession.next_question(game_session)}
+    {:reply, {:ok, game_session}, updated_game_session}
   end
 
   def handle_call({:player_name_exists, player_name}, _from, game_session) do
