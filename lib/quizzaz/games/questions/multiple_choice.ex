@@ -13,6 +13,7 @@ defmodule Quizzaz.Games.Questions.MultipleChoice do
     multiple_choice
     |> cast(attrs, [:prompt, :answer, :choices])
     |> validate_required([:prompt, :answer, :choices])
+
     # TODO validate answer is within range of choices
   end
 end

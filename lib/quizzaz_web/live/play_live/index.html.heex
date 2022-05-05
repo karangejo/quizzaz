@@ -1,41 +1,41 @@
 <div>
-	<%= case @state do %>
-		<% :not_joined -> %>
-			<.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
-				<%= label f, :session_id %>
- 		 		<%= text_input f, :session_id%>
- 		 		<%= error_tag f, :session_id%>
+  <%= case @state do %>
+    <% :not_joined -> %>
+      <.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
+        <%= label(f, :session_id) %>
+        <%= text_input(f, :session_id) %>
+        <%= error_tag(f, :session_id) %>
 
-				<%= label f, :name %>
- 		 		<%= text_input f, :name%>
- 		 		<%= error_tag f, :name%>
+        <%= label(f, :name) %>
+        <%= text_input(f, :name) %>
+        <%= error_tag(f, :name) %>
 
-		  		<%= submit "Join Game" %>
-			</.form>
-		<% :joined -> %>
-			<h3>You have joined the game!</h3>
-			<h3>Please wait for the game to start</h3>
-			<p><%= @session_id %></p>
-			<p><%= @name %></p>
-		<% :playing -> %>
-			<h3>You are playing the game</h3>
-			<%= case @question do %>
-				<% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
-					<%= for {choice, i} <- Enum.with_index(q.choices, 1) do %>
-						<button phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
-					<% end %>
-				<% %Quizzaz.Games.Questions.OpenEnded{} -> %>
-					<h4>Display text input</h4>
-				<% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
-					<h4>Display scrambled letters</h4>
-				<% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
-					<h4>Display scrambled list</h4>
-				<% _ -> %>
-					<h4>Waiting for question</h4>
-			<% end %>
-		<% :answered -> %>
-			<h3>Great Job!</h3>
-		<% :paused -> %>
-			<h3>Game is paused</h3>
-	<% end %>
+        <%= submit("Join Game") %>
+      </.form>
+    <% :joined -> %>
+      <h3>You have joined the game!</h3>
+      <h3>Please wait for the game to start</h3>
+      <p><%= @session_id %></p>
+      <p><%= @name %></p>
+    <% :playing -> %>
+      <h3>You are playing the game</h3>
+      <%= case @question do %>
+        <% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
+          <%= for {choice, i} <- Enum.with_index(q.choices, 1) do %>
+            <button phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
+          <% end %>
+        <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
+          <h4>Display text input</h4>
+        <% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+          <h4>Display scrambled letters</h4>
+        <% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+          <h4>Display scrambled list</h4>
+        <% _ -> %>
+          <h4>Waiting for question</h4>
+      <% end %>
+    <% :answered -> %>
+      <h3>Great Job!</h3>
+    <% :paused -> %>
+      <h3>Game is paused</h3>
+  <% end %>
 </div>

@@ -1,38 +1,38 @@
 <div>
-	<%= case @state do %>
-		<% :waiting_for_players -> %>
-			<h3>To join this game please enter the following code:</h3> 
-			<p><%= @session_id %></p>
+  <%= case @state do %>
+    <% :waiting_for_players -> %>
+      <h3>To join this game please enter the following code:</h3>
+      <p><%= @session_id %></p>
 
-			<h3>Players:</h3>
-			<%= for player <- @game_session.players do %>
-				<p><%= player.name %></p>
-			<% end %>
-			<button phx-click="start-game">Start Game</button>
-		<% :playing -> %>
-			<h3>Playing Game</h3>
-			<p>time left:</p>
-			<p><%= @countdown %></p>
-			<%= if @question != %{} do %>
-				<%= case @question do %>
-					<% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
-						<h4><%= q.prompt %></h4>		
-					<% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
-						<h4><%= q.prompt %></h4>		
-					<% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
-						<h4><%= q.scrambled %></h4>		
-					<% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
-						<%= for word <- q.scrambled_list do %>		
-							<span><%= word %></span>
-						<% end %>
-				<% end %>
-			<% end %>
-		<% :paused -> %>
-			<h3>Game is paused</h3>
-			<button phx-click="next_question">Next question</button>
-			<%= for player <- @players do %>
-				<p><%= player.name %></p>
-				<p><%= player.score %></p>
-			<% end %>
-	<% end %>
+      <h3>Players:</h3>
+      <%= for player <- @game_session.players do %>
+        <p><%= player.name %></p>
+      <% end %>
+      <button phx-click="start-game">Start Game</button>
+    <% :playing -> %>
+      <h3>Playing Game</h3>
+      <p>time left:</p>
+      <p><%= @countdown %></p>
+      <%= if @question != %{} do %>
+        <%= case @question do %>
+          <% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
+            <h4><%= q.prompt %></h4>
+          <% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
+            <h4><%= q.prompt %></h4>
+          <% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+            <h4><%= q.scrambled %></h4>
+          <% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+            <%= for word <- q.scrambled_list do %>
+              <span><%= word %></span>
+            <% end %>
+        <% end %>
+      <% end %>
+    <% :paused -> %>
+      <h3>Game is paused</h3>
+      <button phx-click="next_question">Next question</button>
+      <%= for player <- @players do %>
+        <p><%= player.name %></p>
+        <p><%= player.score %></p>
+      <% end %>
+  <% end %>
 </div>
