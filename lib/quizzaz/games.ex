@@ -132,10 +132,11 @@ defmodule Quizzaz.Games do
   """
   def create_questions(game_id, questions) do
     questions
-    |> Enum.reduce(Multi.new(), fn question, acc ->
+    |> Enum.with_index()
+    |> Enum.reduce(Multi.new(), fn {question, index}, acc ->
       acc
       |> Multi.insert(
-        :insert_question,
+        {:insert_question, index},
         %Question{}
         |> Question.changeset(%{game_id: game_id, content: question})
       )

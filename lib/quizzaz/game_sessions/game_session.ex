@@ -57,37 +57,43 @@ defmodule Quizzaz.GameSessions.GameSession do
   end
 
   def next_question(
-        %__MODULE__{current_question: current_question, questions: questions} = game_session
+        %__MODULE__{current_question: current_question, questions: questions, players: players} =
+          game_session
       ) do
-    num_questions = length(questions) - 1
+    if players != [] do
+      num_questions = length(questions) - 1
 
-    cond do
-      is_nil(current_question) ->
-        %{
-          game_session
-          | current_question: 0,
-            state: :playing,
-            question_start_time: DateTime.utc_now()
-        }
+      {:ok,
+       cond do
+         is_nil(current_question) ->
+           %{
+             game_session
+             | current_question: 0,
+               state: :playing,
+               question_start_time: DateTime.utc_now()
+           }
 
-      num_questions > current_question ->
-        %{
-          game_session
-          | current_question: current_question + 1,
-            state: :playing,
-            question_start_time: DateTime.utc_now()
-        }
+         num_questions > current_question ->
+           %{
+             game_session
+             | current_question: current_question + 1,
+               state: :playing,
+               question_start_time: DateTime.utc_now()
+           }
 
-      num_questions <= current_question ->
-        finish(game_session)
+         num_questions <= current_question ->
+           finish(game_session)
+       end}
+    else
+      {:error, game_session}
     end
   end
 
   def add_player(%__MODULE__{players: players, state: state} = game_session, %Player{} = player) do
     if state == :waiting_for_players do
-      %{game_session | players: [player] ++ players}
+      {:ok, %{game_session | players: [player] ++ players}}
     else
-      game_session
+      {:error, game_session}
     end
   end
 
@@ -111,12 +117,16 @@ defmodule Quizzaz.GameSessions.GameSession do
     Enum.at(game_session.questions, game_session.current_question)
   end
 
+  def get_players(%__MODULE__{} = game_session) do
+    game_session.players
+  end
+
   defp correct_answer?(answer, %__MODULE__{} = game_session) do
     question = Enum.at(game_session.questions, game_session.current_question)
 
     case question do
       %MultipleChoice{} = q ->
-        q.answer == answer
+        q.answer == String.to_integer(answer)
 
       %OpenEnded{} = _q ->
         not is_nil(answer)
@@ -171,6 +181,8 @@ defmodule Quizzaz.GameSessions.GameSession do
          question_time_interval: question_time_interval
        }) do
     delay = DateTime.diff(DateTime.utc_now(), question_start_time)
-    (question_time_interval - delay) * @points_per_second
+
+    ((question_time_interval / 1000 - delay) * @points_per_second)
+    |> round()
   end
 end

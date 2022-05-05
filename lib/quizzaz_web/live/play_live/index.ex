@@ -40,16 +40,24 @@ defmodule QuizzazWeb.PlayLive.Index do
       if changeset.valid? do
         if not name_already_exists? do
           if RunningSessionsServer.session_exists?(session_id) do
-            GameSessionPubSub.subscribe_to_session(session_id)
             player = Player.create_new_player(name)
-            GameSessionServer.player_join(session_id, player) |> IO.inspect()
-            GameSessionPubSub.broadcast_to_session(session_id, :player_joined)
 
-            socket
-            |> assign(:state, :joined)
-            |> assign(:session_id, session_id)
-            |> assign(:name, name)
-            |> assign(:join_changeset, changeset)
+            case GameSessionServer.player_join(session_id, player) do
+              {:ok, _} ->
+                GameSessionPubSub.subscribe_to_session(session_id)
+                GameSessionPubSub.broadcast_to_session(session_id, :player_joined)
+
+                socket
+                |> assign(:state, :joined)
+                |> assign(:session_id, session_id)
+                |> assign(:name, name)
+                |> assign(:join_changeset, changeset)
+
+              {:error, _} ->
+                socket
+                |> put_flash(:error, "This game has already started")
+                |> assign(:join_changeset, changeset)
+            end
           else
             socket
             |> put_flash(:error, "This game does not exist")
@@ -75,6 +83,12 @@ defmodule QuizzazWeb.PlayLive.Index do
   end
 
   def handle_info(:start_game, socket) do
+    {:noreply,
+     socket
+     |> assign(:state, :playing)}
+  end
+
+  def handle_info(:next_question, socket) do
     {:noreply,
      socket
      |> assign(:state, :playing)}

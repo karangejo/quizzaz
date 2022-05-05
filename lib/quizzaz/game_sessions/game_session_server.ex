@@ -31,6 +31,10 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), :get_current_state)
   end
 
+  def get_players(name) do
+    GenServer.call(via_tuple(name), :get_players)
+  end
+
   def start_next_question(name) do
     GenServer.call(via_tuple(name), {:start_next_question, name})
   end
@@ -50,7 +54,8 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:answer_question, player_name, answer}, _from, game_session) do
-    {:reply, {:ok, game_session.state}, GameSession.answer_question(game_session, player_name, answer)}
+    {:reply, {:ok, game_session.state},
+     GameSession.answer_question(game_session, player_name, answer)}
   end
 
   def handle_call(:start_game_wait_for_players, _from, game_session) do
@@ -58,8 +63,13 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:player_join, player}, _from, game_session) do
-    updated_session = GameSession.add_player(game_session, player)
-    {:reply, {:ok, game_session.state}, updated_session}
+    case GameSession.add_player(game_session, player) do
+      {:ok, updated_session} ->
+        {:reply, {:ok, game_session.state}, updated_session}
+
+      {:error, not_updated_game_session} ->
+        {:reply, {:error, game_session.state}, not_updated_game_session}
+    end
   end
 
   def handle_call(:get_current_state, _from, game_session) do
@@ -67,19 +77,27 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:start_next_question, name}, _from, game_session) do
-    updated_game_session = GameSession.next_question(game_session)
+    case GameSession.next_question(game_session) do
+      {:ok, updated_game_session} ->
+        GameSessionPubSub.broadcast_to_session(
+          name,
+          {:new_question, GameSession.get_current_question(updated_game_session)}
+        )
 
-    GameSessionPubSub.broadcast_to_session(
-      name,
-      {:new_question, GameSession.get_current_question(updated_game_session)}
-    )
+        start_question_timer(game_session, name)
+        {:reply, {:ok, game_session}, updated_game_session}
 
-    start_question_timer(game_session, name)
-    {:reply, {:ok, game_session}, updated_game_session}
+      {:error, game_session} ->
+        {:reply, {:error, game_session}, game_session}
+    end
   end
 
   def handle_call({:player_name_exists, player_name}, _from, game_session) do
     {:reply, {:ok, GameSession.player_name_exists?(game_session, player_name)}, game_session}
+  end
+
+  def handle_call(:get_players, _from, game_session) do
+    {:reply, {:ok, GameSession.get_players(game_session)}, game_session}
   end
 
   def handle_info({:question_finished, name}, game_session) do

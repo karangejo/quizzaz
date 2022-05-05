@@ -21,7 +21,7 @@
 			<h3>You are playing the game</h3>
 			<%= case @question do %>
 				<% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
-					<%= for {choice, i} <- Enum.with_index(q.choices) do %>
+					<%= for {choice, i} <- Enum.with_index(q.choices, 1) do %>
 						<button phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
 					<% end %>
 				<% %Quizzaz.Games.Questions.OpenEnded{} -> %>

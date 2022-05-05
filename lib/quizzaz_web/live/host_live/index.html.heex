@@ -11,10 +11,12 @@
 			<button phx-click="start-game">Start Game</button>
 		<% :playing -> %>
 			<h3>Playing Game</h3>
+			<p>time left:</p>
+			<p><%= @countdown %></p>
 			<%= if @question != %{} do %>
 				<%= case @question do %>
 					<% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
-						<h4><%= q.prompt %>t</h4>		
+						<h4><%= q.prompt %></h4>		
 					<% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
 						<h4><%= q.prompt %></h4>		
 					<% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
@@ -27,5 +29,10 @@
 			<% end %>
 		<% :paused -> %>
 			<h3>Game is paused</h3>
+			<button phx-click="next_question">Next question</button>
+			<%= for player <- @players do %>
+				<p><%= player.name %></p>
+				<p><%= player.score %></p>
+			<% end %>
 	<% end %>
 </div>
