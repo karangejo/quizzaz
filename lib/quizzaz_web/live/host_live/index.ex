@@ -49,13 +49,16 @@ defmodule QuizzazWeb.HostLive.Index do
 
     case GameSessionServer.start_next_question(socket.assigns.session_id) do
       {:ok, _} ->
+        countdown(socket.assigns.question_duration)
+
         {:noreply,
          socket
          |> assign(:state, :playing)}
 
       {:error, _} ->
-        socket
-        |> put_flash(:error, "This game has no players")
+        {:noreply,
+         socket
+         |> put_flash(:error, "This game has no players")}
     end
   end
 
@@ -95,18 +98,19 @@ defmodule QuizzazWeb.HostLive.Index do
   end
 
   def handle_info({:countdown, duration}, socket) do
-    Process.send_after(self(), :countdown, duration - 1)
+
+    countdown(duration - 1)
 
     {:noreply,
      socket
      |> assign(:countdown, duration - 1)}
   end
 
-  def handle_info(_, socket) do
+  def handle_info(_unused_message, socket) do
     {:noreply, socket}
   end
 
   defp countdown(duration) do
-    Process.send_after(self(), {:countdown, duration}, duration)
+    Process.send_after(self(), {:countdown, duration}, 1000)
   end
 end
