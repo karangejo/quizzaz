@@ -121,6 +121,15 @@ defmodule Quizzaz.GameSessions.GameSession do
     game_session.players
   end
 
+  def get_player(%__MODULE__{} = game_session, player_name) do
+    game_session.players
+    |> Enum.find(fn player -> player.name == player_name end)
+  end
+
+  def is_last_question?(%__MODULE__{} = game_session) do
+    game_session.current_question == length(game_session.questions) - 1
+  end
+
   defp correct_answer?(answer, %__MODULE__{} = game_session) do
     question = Enum.at(game_session.questions, game_session.current_question)
 

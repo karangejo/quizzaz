@@ -102,6 +102,15 @@ defmodule QuizzazWeb.PlayLive.Index do
     {:noreply, socket |> assign(:state, :paused)}
   end
 
+  def handle_info(:finished, socket) do
+    {:ok, player} = GameSessionServer.get_player(socket.assigns.session_id, socket.assigns.name)
+
+    {:noreply,
+     socket
+     |> assign(:player, player)
+     |> assign(:state, :finished)}
+  end
+
   def handle_info(_, socket) do
     {:noreply, socket}
   end

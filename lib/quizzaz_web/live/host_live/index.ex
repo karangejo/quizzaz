@@ -84,11 +84,19 @@ defmodule QuizzazWeb.HostLive.Index do
   def handle_info(:pause_game, socket) do
     {:ok, players} = GameSessionServer.get_players(socket.assigns.session_id)
 
-    {:noreply,
-     socket
-     |> assign(:players, players)
-     |> assign(:countdown, socket.assigns.question_duration)
-     |> assign(:state, :paused)}
+    if GameSessionServer.is_last_question?(socket.assigns.session_id) do
+      GameSessionPubSub.broadcast_to_session(socket.assigns.session_id, :finished)
+      {:noreply,
+       socket
+       |> assign(:players, players)
+       |> assign(:state, :finished)}
+    else
+      {:noreply,
+       socket
+       |> assign(:players, players)
+       |> assign(:countdown, socket.assigns.question_duration)
+       |> assign(:state, :paused)}
+    end
   end
 
   def handle_info({:countdown, 0}, socket) do
@@ -98,7 +106,6 @@ defmodule QuizzazWeb.HostLive.Index do
   end
 
   def handle_info({:countdown, duration}, socket) do
-
     countdown(duration - 1)
 
     {:noreply,

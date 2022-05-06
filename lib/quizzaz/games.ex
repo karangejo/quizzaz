@@ -47,7 +47,7 @@ defmodule Quizzaz.Games do
     Game
     |> where(id: ^id)
     |> preload(:questions)
-    |> Repo.one()
+    |> Repo.one!()
   end
 
   @doc """

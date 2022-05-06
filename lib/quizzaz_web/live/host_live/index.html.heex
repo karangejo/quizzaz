@@ -20,8 +20,10 @@
           <% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
             <h4><%= q.prompt %></h4>
           <% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+            <h4>Unscramble</h4>
             <h4><%= q.scrambled %></h4>
           <% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+            <h4>Unscramble</h4>
             <%= for word <- q.scrambled_list do %>
               <span><%= word %></span>
             <% end %>
@@ -30,6 +32,12 @@
     <% :paused -> %>
       <h3>Game is paused</h3>
       <button phx-click="next_question">Next question</button>
+      <%= for player <- @players do %>
+        <p><%= player.name %></p>
+        <p><%= player.score %></p>
+      <% end %>
+    <% :finished -> %>
+      <h3>Game is finished</h3>
       <%= for player <- @players do %>
         <p><%= player.name %></p>
         <p><%= player.score %></p>

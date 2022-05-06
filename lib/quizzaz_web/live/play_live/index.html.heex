@@ -37,5 +37,9 @@
       <h3>Great Job!</h3>
     <% :paused -> %>
       <h3>Game is paused</h3>
+    <% :finished -> %>
+      <h3>Game is finished</h3>
+      <p>your score is:</p>
+      <p><%= @player.score %></p>
   <% end %>
 </div>

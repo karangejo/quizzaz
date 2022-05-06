@@ -43,6 +43,14 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:player_name_exists, player_name})
   end
 
+  def is_last_question?(name) do
+    GenServer.call(via_tuple(name), :is_last_question?)
+  end
+
+  def get_player(name, player_name) do
+    GenServer.call(via_tuple(name), {:get_player, player_name})
+  end
+
   defp via_tuple(name) do
     {:via, Registry, {GameSessionRegistry, name}}
   end
@@ -98,6 +106,14 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
 
   def handle_call(:get_players, _from, game_session) do
     {:reply, {:ok, GameSession.get_players(game_session)}, game_session}
+  end
+
+  def handle_call({:get_player, player_name}, _from, game_session) do
+    {:reply, {:ok, GameSession.get_player(game_session, player_name)}, game_session}
+  end
+
+  def handle_call(:is_last_question?, _from, game_session) do
+    {:reply, GameSession.is_last_question?(game_session), game_session}
   end
 
   def handle_info({:question_finished, name}, game_session) do
