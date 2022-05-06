@@ -41,6 +41,7 @@
 	        <li class="drag-item" draggable="true" id={to_string(i)}><%= letter %></li>
               <% end %>
 	    </ul>
+	    <button phx-click="answer_scramble_letters">submit</button>
 	  </div>
         <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
           <h4>Display scrambled list</h4>
@@ -50,6 +51,7 @@
 	        <li class="drag-item" draggable="true" id={to_string(i)}><%= word %></li>
               <% end %>
 	    </ul>
+	    <button phx-click="answer_scramble_words">submit</button>
 	  </div>
         <% _ -> %>
           <h4>Waiting for question</h4>

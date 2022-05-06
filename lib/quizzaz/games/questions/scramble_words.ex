@@ -14,10 +14,6 @@ defmodule Quizzaz.Games.Questions.ScrambleWords do
     |> validate_required([:answer_list, :scrambled_list])
   end
 
-  @spec create_params(maybe_improper_list) :: %{
-          answer_list: maybe_improper_list,
-          scrambled_list: list
-        }
   def create_params(answer_list) when is_list(answer_list) do
     %{
       answer_list: answer_list,

@@ -3,7 +3,7 @@ defmodule QuizzazWeb.PlayLive.Index do
 
   alias QuizzazWeb.PlayLive.Schemas.JoinSession
   alias Quizzaz.GameSessions.{GameSessionPubSub, RunningSessionsServer, Player, GameSessionServer}
-  alias Quizzaz.Games.Questions.ScrambleLetters
+  alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords}
 
   def mount(_params, _session, socket) do
     changeset = JoinSession.changeset(%{})
@@ -88,6 +88,26 @@ defmodule QuizzazWeb.PlayLive.Index do
     {:noreply, socket |> assign(:state, :answered)}
   end
 
+  def handle_event("answer_scramble_letters", _params, socket) do
+    GameSessionServer.answer_question(
+      socket.assigns.session_id,
+      socket.assigns.name,
+      socket.assigns.unscrambled_word
+    )
+
+    {:noreply, socket |> assign(:state, :answered)}
+  end
+
+  def handle_event("answer_scramble_words", _params, socket) do
+    GameSessionServer.answer_question(
+      socket.assigns.session_id,
+      socket.assigns.name,
+      socket.assigns.unscrambled_words
+    )
+
+    {:noreply, socket |> assign(:state, :answered)}
+  end
+
   def handle_event("unscrambled_word", %{"unscrambled" => unscrambled}, socket) do
     {:noreply,
      socket
@@ -120,6 +140,12 @@ defmodule QuizzazWeb.PlayLive.Index do
         {:noreply,
          socket
          |> assign(:letters, letters)
+         |> assign(:question, question)}
+
+      %ScrambleWords{} = q ->
+        {:noreply,
+         socket
+         |> assign(:words, q.scrambled_list)
          |> assign(:question, question)}
 
       _ ->

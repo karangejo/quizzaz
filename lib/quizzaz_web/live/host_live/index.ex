@@ -86,6 +86,7 @@ defmodule QuizzazWeb.HostLive.Index do
 
     if GameSessionServer.is_last_question?(socket.assigns.session_id) do
       GameSessionPubSub.broadcast_to_session(socket.assigns.session_id, :finished)
+
       {:noreply,
        socket
        |> assign(:players, players)
@@ -113,7 +114,8 @@ defmodule QuizzazWeb.HostLive.Index do
      |> assign(:countdown, duration - 1)}
   end
 
-  def handle_info(_unused_message, socket) do
+  def handle_info(unused_message, socket) do
+    IO.inspect(unused_message)
     {:noreply, socket}
   end
 
