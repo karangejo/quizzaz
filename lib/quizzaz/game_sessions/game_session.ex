@@ -131,7 +131,7 @@ defmodule Quizzaz.GameSessions.GameSession do
   end
 
   defp correct_answer?(answer, %__MODULE__{} = game_session) do
-    question = Enum.at(game_session.questions, game_session.current_question)
+    question = get_current_question(game_session)
 
     case question do
       %MultipleChoice{} = q ->

@@ -3,6 +3,7 @@ defmodule QuizzazWeb.PlayLive.Index do
 
   alias QuizzazWeb.PlayLive.Schemas.JoinSession
   alias Quizzaz.GameSessions.{GameSessionPubSub, RunningSessionsServer, Player, GameSessionServer}
+  alias Quizzaz.Games.Questions.ScrambleLetters
 
   def mount(_params, _session, socket) do
     changeset = JoinSession.changeset(%{})
@@ -77,9 +78,26 @@ defmodule QuizzazWeb.PlayLive.Index do
     {:noreply, updated_socket}
   end
 
+  def handle_event("answer_question", %{"open_ended_answer" => %{"answer" => answer}}, socket) do
+    GameSessionServer.answer_question(socket.assigns.session_id, socket.assigns.name, answer)
+    {:noreply, socket |> assign(:state, :answered)}
+  end
+
   def handle_event("answer_question", %{"answer" => answer}, socket) do
     GameSessionServer.answer_question(socket.assigns.session_id, socket.assigns.name, answer)
     {:noreply, socket |> assign(:state, :answered)}
+  end
+
+  def handle_event("unscrambled_word", %{"unscrambled" => unscrambled}, socket) do
+    {:noreply,
+     socket
+     |> assign(:unscrambled_word, unscrambled)}
+  end
+
+  def handle_event("unscrambled_words", %{"unscrambled" => unscrambled}, socket) do
+    {:noreply,
+     socket
+     |> assign(:unscrambled_words, unscrambled)}
   end
 
   def handle_info(:start_game, socket) do
@@ -95,7 +113,18 @@ defmodule QuizzazWeb.PlayLive.Index do
   end
 
   def handle_info({:new_question, question}, socket) do
-    {:noreply, socket |> assign(:question, question)}
+    case question do
+      %ScrambleLetters{} = q ->
+        letters = String.codepoints(q.scrambled)
+
+        {:noreply,
+         socket
+         |> assign(:letters, letters)
+         |> assign(:question, question)}
+
+      _ ->
+        {:noreply, socket |> assign(:question, question)}
+    end
   end
 
   def handle_info(:pause_game, socket) do
@@ -111,7 +140,8 @@ defmodule QuizzazWeb.PlayLive.Index do
      |> assign(:state, :finished)}
   end
 
-  def handle_info(_, socket) do
+  def handle_info(unused_message, socket) do
+    IO.inspect(unused_message)
     {:noreply, socket}
   end
 end

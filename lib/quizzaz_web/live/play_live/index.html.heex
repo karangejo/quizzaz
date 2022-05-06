@@ -26,10 +26,31 @@
           <% end %>
         <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
           <h4>Display text input</h4>
-        <% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+          <.form let={f} for={:open_ended_answer} phx-submit="answer_question">
+            <%= label(f, :answer) %>
+            <%= textarea(f, :answer) %>
+            <%= error_tag(f, :answer) %>
+
+            <%= submit("submit") %>
+          </.form>
+        <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
           <h4>Display scrambled letters</h4>
-        <% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+	  <div phx-hook="Drag" id="scramble-letters-container" >
+	    <ul class="dropzone-letters" id="scramble-letters-list">
+	      <%= for {letter, i} <- Enum.with_index(@letters) do %>
+	        <li class="drag-item" draggable="true" id={to_string(i)}><%= letter %></li>
+              <% end %>
+	    </ul>
+	  </div>
+        <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
           <h4>Display scrambled list</h4>
+	  <div phx-hook="Drag" id="scramble-word-container" >
+	    <ul class="dropzone-words" id="scramble-word-list">
+	      <%= for {word, i} <- Enum.with_index(@words) do %>
+	        <li class="drag-item" draggable="true" id={to_string(i)}><%= word %></li>
+              <% end %>
+	    </ul>
+	  </div>
         <% _ -> %>
           <h4>Waiting for question</h4>
       <% end %>
