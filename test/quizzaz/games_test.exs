@@ -1,9 +1,12 @@
 defmodule Quizzaz.GamesTest do
   use Quizzaz.DataCase
   import Quizzaz.GamesFixtures
+  import Quizzaz.AccountsFixtures
 
+  alias Quizzaz.Repo
   alias Quizzaz.Games
   alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords}
+  # |> Repo.preload(:questions)
 
   describe "games" do
     alias Quizzaz.Games.Game
@@ -12,16 +15,21 @@ defmodule Quizzaz.GamesTest do
 
     test "list_games/0 returns all games" do
       game = game_fixture()
+
       assert Games.list_games() == [game]
     end
 
     test "get_game!/1 returns the game with given id" do
-      game = game_fixture()
+      game =
+        game_fixture()
+        |> Repo.preload(:questions)
+
       assert Games.get_game!(game.id) == game
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{name: "some name", type: :public}
+      %{id: user_id} = user_fixture()
+      valid_attrs = %{user_id: user_id, name: "some name", type: :public}
 
       assert {:ok, %Game{} = game} = Games.create_game(valid_attrs)
       assert game.name == "some name"
@@ -40,7 +48,7 @@ defmodule Quizzaz.GamesTest do
     end
 
     test "update_game/2 with invalid data returns error changeset" do
-      game = game_fixture()
+      game = game_fixture() |> Repo.preload(:questions)
       assert {:error, %Ecto.Changeset{}} = Games.update_game(game, @invalid_attrs)
       assert game == Games.get_game!(game.id)
     end

@@ -4,7 +4,7 @@ defmodule Quizzaz.Repo.Migrations.CreateQuestions do
   def change do
     create table(:questions) do
       add :content, :jsonb
-      add :game_id, references(:games, on_delete: :nothing)
+      add :game_id, references(:games, on_delete: :delete_all)
 
       timestamps()
     end
