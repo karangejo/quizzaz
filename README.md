@@ -10,6 +10,13 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
+## TODO
+1. supervisor for liveviews that kill the process and de-register the session
+2. homepage with links to login, play and host
+3. fix urls for host and play
+4. design system and styling 
+5. polish
+
 ## Learn more
 
   * Official website: https://www.phoenixframework.org/

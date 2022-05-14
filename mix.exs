@@ -50,7 +50,8 @@ defmodule Quizzaz.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:polymorphic_embed, "~> 1.8.0"}
+      {:polymorphic_embed, "~> 1.8.0"},
+      {:tailwind, "~> 0.1.5"}
     ]
   end
 
