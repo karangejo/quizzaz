@@ -1,10 +1,19 @@
-<ul>
+<div>
   <%= if @current_user do %>
-    <li><%= @current_user.email %></li>
-    <li><%= link("Settings", to: Routes.user_settings_path(@conn, :edit)) %></li>
-    <li><%= link("Log out", to: Routes.user_session_path(@conn, :delete), method: :delete) %></li>
+    <p class="m-8"><%= @current_user.email %></p>
+    <div class="m-8">
+      <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "btn-blue m-4") %>
+    </div>
+    <div class="m-8">
+      <%= link("Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "btn-blue m-4") %>
+    </div>
   <% else %>
-    <li><%= link("Register", to: Routes.user_registration_path(@conn, :new)) %></li>
-    <li><%= link("Log in", to: Routes.user_session_path(@conn, :new)) %></li>
+    <div class="m-8">
+      <%= link("Register", to: Routes.user_registration_path(@conn, :new), class: "btn-blue m-4") %>
+    </div>
+    <div class="m-8">
+      <%= link("Log in", to: Routes.user_session_path(@conn, :new), class: "btn-blue m-4") %>
+    </div>
   <% end %>
-</ul>
+</div>
+

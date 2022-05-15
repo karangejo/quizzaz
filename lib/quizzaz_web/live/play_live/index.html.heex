@@ -35,11 +35,17 @@
         <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
           <h4>Display text input</h4>
           <.form let={f} for={:open_ended_answer} phx-submit="answer_question">
-            <%= label(f, :answer, class: "input-label") %>
-            <%= textarea(f, :answer) %>
-            <%= error_tag(f, :answer) %>
+            <div class="flex flex-col">
+              <div>
+                <%= label(f, :answer, class: "input-label") %>
+                <%= textarea(f, :answer, class: "input") %>
+                <%= error_tag(f, :answer) %>
+              </div>
 
-            <%= submit("submit", class: "btn-blue") %>
+              <div class="p-4">
+                <%= submit("submit", class: "btn-blue") %>
+              </div>
+            </div>
           </.form>
         <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
           <h4>Display scrambled letters</h4>

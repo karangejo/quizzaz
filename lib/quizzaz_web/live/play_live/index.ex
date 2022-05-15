@@ -35,12 +35,12 @@ defmodule QuizzazWeb.PlayLive.Index do
       join_session
       |> JoinSession.changeset()
 
-    {:ok, name_already_exists?} = GameSessionServer.player_name_exists?(session_id, name)
-
     updated_socket =
-      if changeset.valid? do
-        if not name_already_exists? do
-          if RunningSessionsServer.session_exists?(session_id) do
+      if RunningSessionsServer.session_exists?(session_id) |> IO.inspect() do
+        if changeset.valid? do
+          {:ok, name_already_exists?} = GameSessionServer.player_name_exists?(session_id, name)
+
+          if not name_already_exists? do
             player = Player.create_new_player(name)
 
             case GameSessionServer.player_join(session_id, player) do
@@ -61,18 +61,18 @@ defmodule QuizzazWeb.PlayLive.Index do
             end
           else
             socket
-            |> put_flash(:error, "This game does not exist")
+            |> put_flash(:error, "This name already exists")
             |> assign(:join_changeset, changeset)
           end
         else
           socket
-          |> put_flash(:error, "This name already exists")
-          |> assign(:join_changeset, changeset)
+          |> put_flash(:error, "Invalid input")
+          |> assign(:join_changeset, changeset |> Map.put(:action, :validate))
         end
       else
         socket
-        |> put_flash(:error, "Invalid input")
-        |> assign(:join_changeset, changeset |> Map.put(:action, :validate))
+        |> put_flash(:error, "This game does not exist")
+        |> assign(:join_changeset, changeset)
       end
 
     {:noreply, updated_socket}

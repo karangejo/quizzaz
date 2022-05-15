@@ -7,11 +7,13 @@ defmodule QuizzazWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {QuizzazWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
   end
+
+  pipeline :root_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :root})
+  pipeline :game_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :game})
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -40,7 +42,7 @@ defmodule QuizzazWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through [:browser, :root_layout]
 
       live_dashboard "/dashboard", metrics: QuizzazWeb.Telemetry
     end
@@ -52,7 +54,7 @@ defmodule QuizzazWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through :browser
+      pipe_through [:browser, :root_layout]
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
@@ -61,7 +63,7 @@ defmodule QuizzazWeb.Router do
   ## Authentication routes
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :root_layout]
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -74,7 +76,7 @@ defmodule QuizzazWeb.Router do
   end
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :root_layout]
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
@@ -89,14 +91,17 @@ defmodule QuizzazWeb.Router do
   end
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :root_layout]
 
     delete "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
 
+  scope "/", QuizzazWeb do
+    pipe_through [:browser, :game_layout]
     live "/host/:game_id/:session_id/:interval", HostLive.Index, :index
     live "/play", PlayLive.Index, :index
   end
