@@ -2,15 +2,23 @@
   <%= case @state do %>
     <% :not_joined -> %>
       <.form let={f} for={@join_changeset} phx-change="validate" phx-submit="join">
-        <%= label(f, :session_id) %>
-        <%= text_input(f, :session_id) %>
-        <%= error_tag(f, :session_id) %>
+        <div class="flex flex-col">
+          <div>
+            <%= label(f, :session_id, class: "input-label") %>
+            <%= text_input(f, :session_id, class: "input") %>
+            <%= error_tag(f, :session_id) %>
+          </div>
 
-        <%= label(f, :name) %>
-        <%= text_input(f, :name) %>
-        <%= error_tag(f, :name) %>
+          <div>
+            <%= label(f, :name, class: "input-label") %>
+            <%= text_input(f, :name, class: "input") %>
+            <%= error_tag(f, :name) %>
+          </div>
 
-        <%= submit("Join Game") %>
+          <div class="p-4">
+            <%= submit("Join Game", class: "btn-blue" ) %>
+          </div>
+        </div>
       </.form>
     <% :joined -> %>
       <h3>You have joined the game!</h3>
@@ -22,36 +30,36 @@
       <%= case @question do %>
         <% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
           <%= for {choice, i} <- Enum.with_index(q.choices, 1) do %>
-            <button phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
+            <button class="btn-blue" phx-click="answer_question" phx-value-answer={i}><%= choice %></button>
           <% end %>
         <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
           <h4>Display text input</h4>
           <.form let={f} for={:open_ended_answer} phx-submit="answer_question">
-            <%= label(f, :answer) %>
+            <%= label(f, :answer, class: "input-label") %>
             <%= textarea(f, :answer) %>
             <%= error_tag(f, :answer) %>
 
-            <%= submit("submit") %>
+            <%= submit("submit", class: "btn-blue") %>
           </.form>
         <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
           <h4>Display scrambled letters</h4>
-	  <div phx-hook="Drag" id="scramble-letters-container" >
+	  <div phx-hook="Drag" id="scramble-letters-container" class="m-12" >
 	    <ul class="dropzone-letters" id="scramble-letters-list">
 	      <%= for {letter, i} <- Enum.with_index(@letters) do %>
-	        <li class="drag-item" draggable="true" id={to_string(i)}><%= letter %></li>
+	        <li class="drag-item draggable-item" draggable="true" id={to_string(i)}><%= letter %></li>
               <% end %>
 	    </ul>
-	    <button phx-click="answer_scramble_letters">submit</button>
+	    <button class="btn-blue mt-12" phx-click="answer_scramble_letters">submit</button>
 	  </div>
         <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
           <h4>Display scrambled list</h4>
-	  <div phx-hook="Drag" id="scramble-word-container" >
+	  <div phx-hook="Drag" id="scramble-word-container" class="m-12" >
 	    <ul class="dropzone-words" id="scramble-word-list">
 	      <%= for {word, i} <- Enum.with_index(@words) do %>
-	        <li class="drag-item" draggable="true" id={to_string(i)}><%= word %></li>
+	        <li class="drag-item draggable-item" draggable="true" id={to_string(i)}><%= word %></li>
               <% end %>
 	    </ul>
-	    <button phx-click="answer_scramble_words">submit</button>
+	    <button class="btn-blue mt-12" phx-click="answer_scramble_words">submit</button>
 	  </div>
         <% _ -> %>
           <h4>Waiting for question</h4>

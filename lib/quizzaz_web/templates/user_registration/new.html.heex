@@ -7,16 +7,16 @@
     </div>
   <% end %>
 
-  <%= label(f, :email) %>
+  <%= label(f, :email, class: "input-label") %>
   <%= email_input(f, :email, required: true) %>
   <%= error_tag(f, :email) %>
 
-  <%= label(f, :password) %>
+  <%= label(f, :password, class: "input-label") %>
   <%= password_input(f, :password, required: true) %>
   <%= error_tag(f, :password) %>
 
   <div>
-    <%= submit("Register") %>
+    <%= submit("Register", class: "btn-blue") %>
   </div>
 </.form>
 

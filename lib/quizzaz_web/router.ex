@@ -20,7 +20,8 @@ defmodule QuizzazWeb.Router do
   scope "/", QuizzazWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    # get "/", PageController, :index
+    get "/", HomePageController, :index
   end
 
   # Other scopes may use custom stacks.

@@ -2,6 +2,34 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* custom components */
+@layer components {
+  .btn-blue {
+    @apply bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded
+  }
+
+  .input-label {
+    @apply block text-xs font-medium text-gray-500
+  }
+
+  .input {
+    @apply w-full p-3 mt-1 text-sm border-2 border-gray-200 rounded w-60
+  }
+
+  .input-error {
+    @apply pt-4
+  }
+
+  .draggable-item {
+    @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
+  }
+
+  #content {
+    @apply p-4 text-center
+  }
+
+}
+
 /* This file is for your main application CSS */
 
 /* Alerts and form errors used by phx.new */

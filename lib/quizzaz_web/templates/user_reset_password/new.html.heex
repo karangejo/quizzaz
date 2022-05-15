@@ -1,11 +1,11 @@
 <h1>Forgot your password?</h1>
 
 <.form let={f} for={:user} action={Routes.user_reset_password_path(@conn, :create)}>
-  <%= label(f, :email) %>
+  <%= label(f, :email, class: "input-label") %>
   <%= email_input(f, :email, required: true) %>
 
   <div>
-    <%= submit("Send instructions to reset password") %>
+    <%= submit("Send instructions to reset password", class: "btn-blue") %>
   </div>
 </.form>
 

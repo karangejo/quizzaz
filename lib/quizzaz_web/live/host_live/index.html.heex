@@ -8,7 +8,7 @@
       <%= for player <- @game_session.players do %>
         <p><%= player.name %></p>
       <% end %>
-      <button phx-click="start-game">Start Game</button>
+      <button class="btn-blue" phx-click="start-game">Start Game</button>
     <% :playing -> %>
       <h3>Playing Game</h3>
       <p>time left:</p>
