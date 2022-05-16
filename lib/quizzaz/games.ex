@@ -23,6 +23,12 @@ defmodule Quizzaz.Games do
     Repo.all(Game)
   end
 
+  def list_public_games do
+    Game
+    |> where(type: :public)
+    |> Repo.all()
+  end
+
   def list_games_by_user(user_id) do
     Game
     |> where(user_id: ^user_id)
