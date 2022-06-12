@@ -1,6 +1,6 @@
 <div>
   <%= for game <- @games do %>
-    <p><%= game.name %></p>
+    <p class="m-4"><%= game.name %></p>
     <%= link("View", to: Routes.game_show_path(@conn, :show, game), class: "btn-blue") %>
     <%= link("Host", to: Routes.host_index_path(@conn, :index, game.id, Ecto.UUID.generate(), 30), class: "btn-blue") %>
   <% end %>

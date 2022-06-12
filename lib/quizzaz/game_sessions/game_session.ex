@@ -12,6 +12,7 @@ defmodule Quizzaz.GameSessions.GameSession do
   @type t() :: %__MODULE__{
           state: game_state,
           name: String.t(),
+          session_id: String.t(),
           players: list(Player.t()),
           questions: list(Map.t()),
           current_question: Integer.t(),
@@ -21,6 +22,7 @@ defmodule Quizzaz.GameSessions.GameSession do
 
   defstruct [
     :name,
+    :session_id,
     :state,
     :players,
     :questions,
@@ -29,7 +31,7 @@ defmodule Quizzaz.GameSessions.GameSession do
     :question_time_interval
   ]
 
-  def create_game_session(%Game{} = game, question_interval) do
+  def create_game_session(%Game{} = game, question_interval, session_id) do
     game =
       game
       |> Repo.preload(:questions)
@@ -38,6 +40,7 @@ defmodule Quizzaz.GameSessions.GameSession do
      %__MODULE__{
        name: game.name,
        state: :created,
+       session_id: session_id,
        players: [],
        questions: game.questions |> Enum.map(fn q -> q.content end),
        current_question: nil,
@@ -95,6 +98,13 @@ defmodule Quizzaz.GameSessions.GameSession do
     else
       {:error, game_session}
     end
+  end
+
+  def remove_player(
+        %__MODULE__{players: players} = game_session,
+        %Player{} = player
+      ) do
+    %{game_session | players: Enum.reject(players, fn p -> p.name == player.name end)}
   end
 
   def answer_question(%__MODULE__{} = game_session, player_name, answer) do

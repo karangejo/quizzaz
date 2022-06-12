@@ -24,6 +24,10 @@
     @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
   }
 
+  .card {
+    @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
+  }
+
   #content {
     @apply p-4 text-center
   }

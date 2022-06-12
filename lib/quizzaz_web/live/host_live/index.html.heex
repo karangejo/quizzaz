@@ -1,6 +1,6 @@
 <div>
   <%= case @state do %>
-    <% :waiting_for_players -> %>
+    <% state when state in [:waiting_for_players, :created] -> %>
       <h3>To join this game please enter the following code:</h3>
       <p><%= @session_id %></p>
 

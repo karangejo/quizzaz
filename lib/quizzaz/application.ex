@@ -21,7 +21,9 @@ defmodule Quizzaz.Application do
       # dynamic supervisor for game sessions
       {DynamicSupervisor, strategy: :one_for_one, name: GameSessionSupervisor},
       # Registry of running game sessions
-      {Quizzaz.GameSessions.RunningSessionsServer, MapSet.new()}
+      {Quizzaz.GameSessions.RunningSessionsServer, MapSet.new()},
+      # Player Monitor
+      {Quizzaz.GameSessions.PlayerMonitor, %{}}
       # Start a worker by calling: Quizzaz.Worker.start_link(arg)
       # {Quizzaz.Worker, arg}
     ]

@@ -24,7 +24,8 @@ defmodule QuizzazWeb.HostLive.Index do
       else
         game = Games.get_game!(game_id)
 
-        with {:ok, session} <- GameSession.create_game_session(game, integer_interval * 1000),
+        with {:ok, session} <-
+               GameSession.create_game_session(game, integer_interval * 1000, session_id),
              {:ok, _pid} <- GameSessionServer.start_game_session(session, session_id),
              {:ok, _state} <- GameSessionServer.start_game_wait_for_players(session_id),
              :ok <- RunningSessionsServer.put_session_name(session_id) do
@@ -32,13 +33,20 @@ defmodule QuizzazWeb.HostLive.Index do
         end
       end
 
+    current_question =
+      if not is_nil(game_session.current_question) do
+        Enum.at(game_session.questions, game_session.current_question)
+      else
+        %{}
+      end
+
     {:ok,
      socket
-     |> assign(:state, :waiting_for_players)
+     |> assign(:state, game_session.state)
      |> assign(:game_session, game_session)
      |> assign(:session_id, session_id)
-     |> assign(:question, %{})
-     |> assign(:players, [])
+     |> assign(:question, current_question)
+     |> assign(:players, game_session.players)
      |> assign(:question_duration, integer_interval)
      |> assign(:countdown, integer_interval)
      |> assign(:game_id, game_id)}
@@ -70,6 +78,15 @@ defmodule QuizzazWeb.HostLive.Index do
     {:noreply,
      socket
      |> assign(:state, :playing)}
+  end
+
+  def handle_info({:player_left, player}, socket) do
+    {:ok, updated_session} = GameSessionServer.remove_player(socket.assigns.session_id, player)
+
+    {:noreply,
+     socket
+     |> assign(:game_session, updated_session)
+     |> assign(:players, updated_session.players)}
   end
 
   def handle_info(:player_joined, socket) do

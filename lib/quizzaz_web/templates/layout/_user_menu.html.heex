@@ -1,18 +1,19 @@
-<div>
+<div class="flex flex-col card">
+  <h1 class="m-4">Quizzaz</h1>
   <%= if @current_user do %>
-    <p class="m-8"><%= @current_user.email %></p>
-    <div class="m-8">
-      <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "btn-blue m-4") %>
+    <p class="m-4"><%= @current_user.email %></p>
+    <div class="m-4">
+      <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "btn-blue") %>
     </div>
-    <div class="m-8">
-      <%= link("Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "btn-blue m-4") %>
+    <div class="m-4">
+      <%= link("Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "btn-blue") %>
     </div>
   <% else %>
-    <div class="m-8">
-      <%= link("Register", to: Routes.user_registration_path(@conn, :new), class: "btn-blue m-4") %>
+    <div class="m-4">
+      <%= link("Register", to: Routes.user_registration_path(@conn, :new), class: "btn-blue") %>
     </div>
-    <div class="m-8">
-      <%= link("Log in", to: Routes.user_session_path(@conn, :new), class: "btn-blue m-4") %>
+    <div class="m-4">
+      <%= link("Log in", to: Routes.user_session_path(@conn, :new), class: "btn-blue") %>
     </div>
   <% end %>
 </div>

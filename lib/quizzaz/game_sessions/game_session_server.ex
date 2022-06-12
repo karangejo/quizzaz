@@ -27,6 +27,10 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:player_join, player})
   end
 
+  def remove_player(name, player) do
+    GenServer.call(via_tuple(name), {:remove_player, player})
+  end
+
   def get_current_state(name) do
     GenServer.call(via_tuple(name), :get_current_state)
   end
@@ -78,6 +82,11 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
       {:error, not_updated_game_session} ->
         {:reply, {:error, game_session.state}, not_updated_game_session}
     end
+  end
+
+  def handle_call({:remove_player, player}, _from, game_session) do
+    updated_game_session = GameSession.remove_player(game_session, player)
+    {:reply, {:ok, updated_game_session.state}, updated_game_session}
   end
 
   def handle_call(:get_current_state, _from, game_session) do
