@@ -6,7 +6,11 @@
       <%= link("Settings", to: Routes.user_settings_path(@conn, :edit), class: "btn-blue") %>
     </div>
     <div class="m-4">
-      <%= link("Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "btn-blue") %>
+      <%= link("Log out",
+        to: Routes.user_session_path(@conn, :delete),
+        method: :delete,
+        class: "btn-blue"
+      ) %>
     </div>
   <% else %>
     <div class="m-4">
@@ -17,4 +21,3 @@
     </div>
   <% end %>
 </div>
-

@@ -1,95 +1,101 @@
- <div>
-    <%= case @current_question_type do %>
-      <% "multiple_choice" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-mc-question-form"
-          phx-target={@live_target}
-          phx-submit="add_question"
-        >
-          <%= label(f, :prompt, class: "input-label") %>
-          <%= text_input(f, :prompt, class: "input") %>
-          <%= error_tag(f, :prompt) %>
+<div>
+  <%= case @current_question_type do %>
+    <% "multiple_choice" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-mc-question-form"
+        phx-target={@live_target}
+        phx-submit="add_question"
+      >
+        <%= label(f, :prompt, class: "input-label") %>
+        <%= text_input(f, :prompt, class: "input") %>
+        <%= error_tag(f, :prompt) %>
 
-          <%= label(f, :choice_1, class: "input-label") %>
-          <%= text_input(f, :choice_1, class: "input") %>
-          <%= error_tag(f, :choice_1) %>
+        <%= label(f, :choice_1, class: "input-label") %>
+        <%= text_input(f, :choice_1, class: "input") %>
+        <%= error_tag(f, :choice_1) %>
 
-          <%= label(f, :choice_2, class: "input-label") %>
-          <%= text_input(f, :choice_2, class: "input") %>
-          <%= error_tag(f, :choice_2) %>
+        <%= label(f, :choice_2, class: "input-label") %>
+        <%= text_input(f, :choice_2, class: "input") %>
+        <%= error_tag(f, :choice_2) %>
 
-          <%= label(f, :choice_3, class: "input-label") %>
-          <%= text_input(f, :choice_3, class: "input") %>
-          <%= error_tag(f, :choice_3) %>
+        <%= label(f, :choice_3, class: "input-label") %>
+        <%= text_input(f, :choice_3, class: "input") %>
+        <%= error_tag(f, :choice_3) %>
 
-          <%= label(f, :choice_4, class: "input-label") %>
-          <%= text_input(f, :choice_4, class: "input") %>
-          <%= error_tag(f, :choice_4) %>
+        <%= label(f, :choice_4, class: "input-label") %>
+        <%= text_input(f, :choice_4, class: "input") %>
+        <%= error_tag(f, :choice_4) %>
 
-          <%= label(f, :answer, class: "input-label") %>
-          <%= select(f, :answer, [1, 2, 3, 4], prompt: "select answer") %>
-          <%= error_tag(f, :answer) %>
+        <%= label(f, :answer, class: "input-label") %>
+        <%= select(f, :answer, [1, 2, 3, 4], prompt: "select answer") %>
+        <%= error_tag(f, :answer) %>
 
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "scramble_letters" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-sl-question-form"
-          phx-target={@live_target}
-          phx-submit="add_question"
-        >
-          <%= label(f, :answer, class: "input-label") %>
-          <%= text_input(f, :answer, class: "input") %>
-          <%= error_tag(f, :answer) %>
+        <div>
+          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
+        </div>
+      </.form>
+    <% "scramble_letters" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-sl-question-form"
+        phx-target={@live_target}
+        phx-submit="add_question"
+      >
+        <%= label(f, :answer, class: "input-label") %>
+        <%= text_input(f, :answer, class: "input") %>
+        <%= error_tag(f, :answer) %>
 
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "scramble_words" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-sw-question-form"
-          phx-target={@live_target}
-          phx-submit="add_question"
-        >
-          <%= label(f, :answer_list, class: "input-label") %>
-          <%= text_input(f, :answer_list, class: "input") %>
-          <%= error_tag(f, :answer_list) %>
+        <div>
+          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
+        </div>
+      </.form>
+    <% "scramble_words" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-sw-question-form"
+        phx-target={@live_target}
+        phx-submit="add_question"
+      >
+        <%= label(f, :answer_list, class: "input-label") %>
+        <%= text_input(f, :answer_list, class: "input") %>
+        <%= error_tag(f, :answer_list) %>
 
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "open_ended" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-oe-question-form"
-          phx-target={@live_target}
-          phx-submit={case @question_action do
+        <div>
+          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
+        </div>
+      </.form>
+    <% "open_ended" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-oe-question-form"
+        phx-target={@live_target}
+        phx-submit={
+          case @question_action do
             :new_question ->
-            "add_question"
-            :edit_question ->
-            "update_question"
-           end}
-        >
-          <%= label(f, :prompt, class: "input-label") %>
-          <%= text_input(f, :prompt, class: "input") %>
-          <%= error_tag(f, :prompt) %>
+              "add_question"
 
-          <div>
-            <%= submit(add_or_update_btn(@question_action), phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% _ -> %>
-        <% nil %>
-    <% end %>
- </div> 
+            :edit_question ->
+              "update_question"
+          end
+        }
+      >
+        <%= label(f, :prompt, class: "input-label") %>
+        <%= text_input(f, :prompt, class: "input") %>
+        <%= error_tag(f, :prompt) %>
+
+        <div>
+          <%= submit(add_or_update_btn(@question_action),
+            phx_disable_with: "adding...",
+            class: "btn-blue"
+          ) %>
+        </div>
+      </.form>
+    <% _ -> %>
+      <% nil %>
+  <% end %>
+</div>

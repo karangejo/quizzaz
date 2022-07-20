@@ -1,20 +1,14 @@
 <div>
   <h2><%= @title %></h2>
 
-  <.form
-    let={f}
-    for={@changeset}
-    id="game-form"
-    phx-target={@myself}
-    phx-change="validate"
-  >
+  <.form let={f} for={@changeset} id="game-form" phx-target={@myself} phx-change="validate">
     <%= label(f, :name, class: "input-label") %>
     <%= text_input(f, :name, class: "input") %>
     <%= error_tag(f, :name) %>
 
     <%= label(f, :type, class: "input-label") %>
     <%= select(f, :type, Quizzaz.Games.Game.game_types()) %>
-    <%= error_tag(f, :type) %> 
+    <%= error_tag(f, :type) %>
   </.form>
 
   <.form
@@ -23,16 +17,13 @@
     id="add-question-form"
     phx-target={@myself}
     phx-change="choose_question_type"
-    
   >
     <%= select(f, :question_type, Quizzaz.Games.Question.question_types(),
       prompt: "select question type"
     ) %>
   </.form>
 
-
   <%= if (not is_nil(@current_question_type) and @question_action == :new_question) or @question_action == :edit_question do %>
-
     <.modal return_to={@modal_return_to}>
       <.live_component
         module={QuizzazWeb.GameLive.QuestionComponent}
@@ -41,7 +32,7 @@
         question_action={@question_action}
         current_question_changeset={@current_question_changeset}
         live_target={@myself}
-        />
+      />
     </.modal>
   <% end %>
 
@@ -63,10 +54,16 @@
         <% _ -> %>
           <% nil %>
       <% end %>
-      <button phx-click="edit_question" phx-value-question-index={index} phx-target={@myself} >edit</button>
-      <button phx-click="delete_question" phx-value-question-index={index} phx-target={@myself} >delete</button>
+      <button phx-click="edit_question" phx-value-question-index={index} phx-target={@myself}>
+        edit
+      </button>
+      <button phx-click="delete_question" phx-value-question-index={index} phx-target={@myself}>
+        delete
+      </button>
     <% end %>
   <% end %>
 
-  <button class="btn-blue" phx-click="save" phx-target={@myself} class="btn-blue">Save Game</button>
+  <button class="btn-blue" phx-click="save" phx-target={@myself} class="btn-blue">
+    Save Game
+  </button>
 </div>
