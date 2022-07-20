@@ -1,0 +1,9 @@
+<.live_component
+      module={QuizzazWeb.GameLive.FormComponent}
+      id={@game.id || :new}
+      title={@page_title}
+      action={@live_action}
+      game={@game}
+      user_id={@user_id}
+      return_to={Routes.game_index_path(@socket, :index)}
+/>

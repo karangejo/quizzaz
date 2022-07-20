@@ -144,10 +144,23 @@ defmodule Quizzaz.Games do
       |> Multi.insert(
         {:insert_question, index},
         %Question{}
-        |> Question.changeset(%{game_id: game_id, content: question})
+        |> Question.changeset(%{game_id: game_id, content: Map.from_struct(question)})
       )
     end)
     |> Repo.transaction()
+  end
+
+  def update_questions(game_id, questions) do
+    case delete_questions(game_id) do
+      {_, nil} -> create_questions(game_id, questions)
+      _ -> :error
+    end
+  end
+
+  def delete_questions(game_id) do
+    Question
+    |> where(game_id: ^game_id)
+    |> Repo.delete_all()
   end
 
   def create_question(attrs \\ %{}) do

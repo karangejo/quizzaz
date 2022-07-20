@@ -7,7 +7,6 @@
     id="game-form"
     phx-target={@myself}
     phx-change="validate"
-    phx-submit="save"
   >
     <%= label(f, :name, class: "input-label") %>
     <%= text_input(f, :name, class: "input") %>
@@ -15,10 +14,7 @@
 
     <%= label(f, :type, class: "input-label") %>
     <%= select(f, :type, Quizzaz.Games.Game.game_types()) %>
-    <%= error_tag(f, :type) %>
-    <!--<div>
-      <%= submit("Save", phx_disable_with: "Saving...") %>
-    </div> -->
+    <%= error_tag(f, :type) %> 
   </.form>
 
   <.form
@@ -26,105 +22,27 @@
     for={@add_question_changeset}
     id="add-question-form"
     phx-target={@myself}
-    phx-submit="choose_question_type"
+    phx-change="choose_question_type"
+    
   >
     <%= select(f, :question_type, Quizzaz.Games.Question.question_types(),
       prompt: "select question type"
     ) %>
-    <div>
-      <%= submit("Add new question", phx_disable_with: "adding...", class: "btn-blue") %>
-    </div>
   </.form>
 
-  <%= if not is_nil(@current_question_type) do %>
-    <%= case @current_question_type do %>
-      <% "multiple_choice" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-mc-question-form"
-          phx-target={@myself}
-          phx-submit="add_question"
-        >
-          <%= label(f, :prompt, class: "input-label") %>
-          <%= text_input(f, :prompt, class: "input") %>
-          <%= error_tag(f, :prompt) %>
 
-          <%= label(f, :choice_1, class: "input-label") %>
-          <%= text_input(f, :choice_1, class: "input") %>
-          <%= error_tag(f, :choice_1) %>
+  <%= if (not is_nil(@current_question_type) and @question_action == :new_question) or @question_action == :edit_question do %>
 
-          <%= label(f, :choice_2, class: "input-label") %>
-          <%= text_input(f, :choice_2, class: "input") %>
-          <%= error_tag(f, :choice_2) %>
-
-          <%= label(f, :choice_3, class: "input-label") %>
-          <%= text_input(f, :choice_3, class: "input") %>
-          <%= error_tag(f, :choice_3) %>
-
-          <%= label(f, :choice_4, class: "input-label") %>
-          <%= text_input(f, :choice_4, class: "input") %>
-          <%= error_tag(f, :choice_4) %>
-
-          <%= label(f, :answer, class: "input-label") %>
-          <%= select(f, :answer, [1, 2, 3, 4], prompt: "select answer") %>
-          <%= error_tag(f, :answer) %>
-
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "scramble_letters" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-sl-question-form"
-          phx-target={@myself}
-          phx-submit="add_question"
-        >
-          <%= label(f, :answer, class: "input-label") %>
-          <%= text_input(f, :answer, class: "input") %>
-          <%= error_tag(f, :answer) %>
-
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "scramble_words" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-sw-question-form"
-          phx-target={@myself}
-          phx-submit="add_question"
-        >
-          <%= label(f, :answer_list, class: "input-label") %>
-          <%= text_input(f, :answer_list, class: "input") %>
-          <%= error_tag(f, :answer_list) %>
-
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% "open_ended" -> %>
-        <.form
-          let={f}
-          for={@current_question_changeset}
-          id="add-oe-question-form"
-          phx-target={@myself}
-          phx-submit="add_question"
-        >
-          <%= label(f, :prompt, class: "input-label") %>
-          <%= text_input(f, :prompt, class: "input") %>
-          <%= error_tag(f, :prompt) %>
-
-          <div>
-            <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-          </div>
-        </.form>
-      <% _ -> %>
-        <% nil %>
-    <% end %>
+    <.modal return_to={@modal_return_to}>
+      <.live_component
+        module={QuizzazWeb.GameLive.QuestionComponent}
+        id="question-form"
+        current_question_type={@current_question_type}
+        question_action={@question_action}
+        current_question_changeset={@current_question_changeset}
+        live_target={@myself}
+        />
+    </.modal>
   <% end %>
 
   <%= if @questions != [] do %>
@@ -145,6 +63,8 @@
         <% _ -> %>
           <% nil %>
       <% end %>
+      <button phx-click="edit_question" phx-value-question-index={index} phx-target={@myself} >edit</button>
+      <button phx-click="delete_question" phx-value-question-index={index} phx-target={@myself} >delete</button>
     <% end %>
   <% end %>
 

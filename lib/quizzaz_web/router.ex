@@ -84,8 +84,8 @@ defmodule QuizzazWeb.Router do
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
     live "/mygames", GameLive.Index, :index
-    live "/mygames/new", GameLive.Index, :new
-    live "/mygames/:id/edit", GameLive.Index, :edit
+    live "/mygames/new", GameLive.New, :new
+    live "/mygames/:id/edit", GameLive.Edit, :edit
 
     live "/mygames/:id", GameLive.Show, :show
     live "/mygames/:id/show/edit", GameLive.Show, :edit
