@@ -2,7 +2,6 @@ defmodule QuizzazWeb.GameLive.Index do
   use QuizzazWeb, :live_view
 
   alias Quizzaz.Games
-  alias Quizzaz.Games.Game
   alias Quizzaz.Accounts
 
   @impl true

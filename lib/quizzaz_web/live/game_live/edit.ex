@@ -2,7 +2,6 @@ defmodule QuizzazWeb.GameLive.Edit do
   use QuizzazWeb, :live_view
 
   alias Quizzaz.Accounts
-  alias Quizzaz.Games.Game
   alias Quizzaz.Games
 
   @impl true
