@@ -41,6 +41,41 @@ defmodule QuizzazWeb.GameLive.FormComponent do
      |> assign(:current_question_changeset, nil)}
   end
 
+  def handle_event(
+        "update_question",
+        %{"open_ended" => %{"prompt" => prompt}},
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    question = %{prompt: prompt}
+
+    changeset =
+      question
+      |> OpenEnded.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
   def handle_event("add_question", %{"open_ended" => %{"prompt" => prompt}}, socket) do
     question = %{prompt: prompt}
 
@@ -147,7 +182,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
         },
         socket
       ) do
-    choices = [c_1, c_2, c_3, c_4]
+    choices = [c_1, c_2, c_3, c_4] |> Enum.reject(fn choice -> choice == "" end)
     question = %{answer: answer, prompt: prompt, choices: choices}
     multiple_choice_changeset = MultipleChoice.changeset(question)
 
@@ -196,9 +231,15 @@ defmodule QuizzazWeb.GameLive.FormComponent do
           nil
       end
 
+    type =
+      case question_type do
+        "" -> nil
+        t -> t
+      end
+
     {:noreply,
      socket
-     |> assign(:current_question_type, question_type)
+     |> assign(:current_question_type, type)
      |> assign(:current_question_changeset, current_question_changeset)
      |> assign(:question_action, :new_question)}
   end
@@ -278,8 +319,14 @@ defmodule QuizzazWeb.GameLive.FormComponent do
     game_params =
       case action do
         :new ->
-          socket.assigns.game_params
-          |> Map.put("user_id", socket.assigns.user_id)
+          case socket.assigns.game_params do
+            nil ->
+              %{}
+
+            params ->
+              params
+              |> Map.put("user_id", socket.assigns.user_id)
+          end
 
         :edit ->
           socket.assigns.game_params
@@ -290,7 +337,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   end
 
   defp save_game(socket, :new, game_params, questions) do
-    with {:ok, game} <- Games.create_game(game_params),
+    with {:ok, game} <- Games.create_game(game_params) |> IO.inspect(),
          {:ok, _} <- Games.create_questions(game.id, questions) do
       {:noreply,
        socket

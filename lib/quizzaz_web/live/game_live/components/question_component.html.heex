@@ -27,6 +27,8 @@
         <%= label(f, :choice_4, class: "input-label") %>
         <%= text_input(f, :choice_4, class: "input") %>
         <%= error_tag(f, :choice_4) %>
+        
+        <%= error_tag(f, :choices) %>
 
         <%= label(f, :answer, class: "input-label") %>
         <%= select(f, :answer, [1, 2, 3, 4], prompt: "select answer") %>

@@ -1,49 +1,21 @@
-<h1>Listing Games</h1>
+<div class="flex flex-col items-center gap-4">
+  <h1>My Games</h1>
 
-<%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.game_index_path(@socket, :index)}>
-    <.live_component
-      module={QuizzazWeb.GameLive.FormComponent}
-      id={@game.id || :new}
-      title={@page_title}
-      action={@live_action}
-      game={@game}
-      user_id={@user_id}
-      return_to={Routes.game_index_path(@socket, :index)}
-    />
-  </.modal>
-<% end %>
+  <%= for game <- @games do %>
+    <div class="card">
+      <%= live_redirect(game.name, to: Routes.game_show_path(@socket, :show, game), class: "btn-blue") %>
+      <%= live_patch("Edit", to: Routes.game_edit_path(@socket, :edit, game), class: "btn-blue") %>
+      <%= link("Delete",
+        to: "#",
+        phx_click: "delete",
+        phx_value_id: game.id,
+        data: [confirm: "Are you sure?"],
+        class: "btn-blue"
+      ) %>
+    </div>
+  <% end %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="games">
-    <%= for game <- @games do %>
-      <tr id={"game-#{game.id}"}>
-        <td><%= game.name %></td>
-
-        <td>
-          <span>
-            <%= live_redirect("Show", to: Routes.game_show_path(@socket, :show, game)) %>
-          </span>
-          <span><%= live_patch("Edit", to: Routes.game_edit_path(@socket, :edit, game)) %></span>
-          <span>
-            <%= link("Delete",
-              to: "#",
-              phx_click: "delete",
-              phx_value_id: game.id,
-              data: [confirm: "Are you sure?"]
-            ) %>
-          </span>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<span><%= live_patch("New Game", to: Routes.game_new_path(@socket, :new)) %></span>
+  <span class="m-8">
+    <%= live_patch("New Game", to: Routes.game_new_path(@socket, :new), class: "btn-blue") %>
+  </span>
+</div>

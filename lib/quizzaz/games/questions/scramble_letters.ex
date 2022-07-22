@@ -12,6 +12,7 @@ defmodule Quizzaz.Games.Questions.ScrambleLetters do
     sc
     |> cast(attrs, [:answer, :scrambled])
     |> validate_required([:answer, :scrambled])
+    |> validate_length(:answer, min: 2)
   end
 
   def create_params(answer) do

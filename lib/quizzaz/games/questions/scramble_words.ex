@@ -12,6 +12,7 @@ defmodule Quizzaz.Games.Questions.ScrambleWords do
     sw
     |> cast(attrs, [:answer_list, :scrambled_list])
     |> validate_required([:answer_list, :scrambled_list])
+    |> validate_length(:answer_list, min: 2)
   end
 
   def create_params(answer_list) when is_list(answer_list) do

@@ -211,4 +211,17 @@ defmodule Quizzaz.Games do
     |> Question.changeset(attrs)
     |> Repo.update()
   end
+
+  def get_question!(id) do
+    Question
+    |> where(id: ^id)
+    |> Repo.one!()
+  end
+
+  def get_game_questions(game_id) do
+    Question
+    |> where(game_id: ^game_id)
+    |> Repo.all()
+    |> Enum.map(fn %Question{content: content} -> content end)
+  end
 end

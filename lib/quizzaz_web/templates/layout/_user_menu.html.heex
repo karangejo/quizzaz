@@ -1,4 +1,4 @@
-<div class="flex flex-col card">
+<div class="flex flex-col card items-center">
   <h1 class="m-4">Quizzaz</h1>
   <%= if @current_user do %>
     <p class="m-4"><%= @current_user.email %></p>
@@ -12,12 +12,30 @@
         class: "btn-blue"
       ) %>
     </div>
+    <div class="m-4">
+      <%= link("My Games",
+        to: Routes.game_index_path(@conn, :index),
+        class: "btn-blue"
+      ) %>
+    </div>
+    <div class="m-4">
+      <%= link("Home",
+        to: Routes.page_path(@conn, :home),
+        class: "btn-blue"
+      ) %>
+    </div>
   <% else %>
     <div class="m-4">
       <%= link("Register", to: Routes.user_registration_path(@conn, :new), class: "btn-blue") %>
     </div>
     <div class="m-4">
       <%= link("Log in", to: Routes.user_session_path(@conn, :new), class: "btn-blue") %>
+    </div>
+    <div class="m-4">
+      <%= link("Home",
+        to: Routes.page_path(@conn, :home),
+        class: "btn-blue"
+      ) %>
     </div>
   <% end %>
 </div>

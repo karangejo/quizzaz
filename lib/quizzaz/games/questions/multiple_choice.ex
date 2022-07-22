@@ -8,11 +8,11 @@ defmodule Quizzaz.Games.Questions.MultipleChoice do
     field :choices, {:array, :string}
   end
 
-  @doc false
   def changeset(multiple_choice \\ %__MODULE__{}, attrs) do
     multiple_choice
     |> cast(attrs, [:prompt, :answer, :choices])
     |> validate_required([:prompt, :answer, :choices])
+    |> validate_length(:choices, min: 4)
 
     # TODO validate answer is within range of choices
   end

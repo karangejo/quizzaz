@@ -21,7 +21,7 @@ defmodule QuizzazWeb.GameLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Games")
+    |> assign(:page_title, "My Games")
     |> assign(:game, nil)
   end
 
