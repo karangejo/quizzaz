@@ -1041,6 +1041,73 @@ defmodule Quizzaz.GameSessionTest do
     end
   end
 
+  describe "all_players_answered?/1" do
+    setup do
+      game = game_fixture()
+
+      q_1 = ScrambleWords.create_params(~w(kittens are cute))
+
+      q_2 = ScrambleWords.create_params(~W(dogs are friendly))
+
+      {:ok, _question_1} = Games.create_question(%{game_id: game.id, content: q_1})
+      {:ok, _question_1} = Games.create_question(%{game_id: game.id, content: q_2})
+      {:ok, game: game}
+    end
+
+    test "returns false when not all players have answered", %{game: game} do
+      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+
+      player_1 = %Player{
+        name: "player 1"
+      }
+
+      player_2 = %Player{
+        name: "player 2"
+      }
+
+      all_players_answered? =
+        game_session
+        |> GameSession.start_game()
+        |> GameSession.add_player(player_1)
+        |> expect_ok()
+        |> GameSession.add_player(player_2)
+        |> expect_ok()
+        |> GameSession.next_question()
+        |> expect_ok()
+        |> GameSession.answer_question("player 1", ~w(kittens are cute))
+        |> GameSession.all_players_answered?()
+
+      assert all_players_answered? == false
+    end
+
+    test "returns true when all players have answered", %{game: game} do
+      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+
+      player_1 = %Player{
+        name: "player 1"
+      }
+
+      player_2 = %Player{
+        name: "player 2"
+      }
+
+      all_players_answered? =
+        game_session
+        |> GameSession.start_game()
+        |> GameSession.add_player(player_1)
+        |> expect_ok()
+        |> GameSession.add_player(player_2)
+        |> expect_ok()
+        |> GameSession.next_question()
+        |> expect_ok()
+        |> GameSession.answer_question("player 1", ~w(kittens are cute))
+        |> GameSession.answer_question("player 2", ~w(kittens are cute))
+        |> GameSession.all_players_answered?()
+
+      assert all_players_answered? == true
+    end
+  end
+
   defp expect_ok({:ok, result}) do
     result
   end

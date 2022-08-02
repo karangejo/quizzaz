@@ -72,7 +72,7 @@ defmodule Quizzaz.GamesTest do
       mutiple_choice_question = %{
         answer: 2,
         prompt: "which animal is the largest?",
-        choices: ["cat", "dog", "elephant"]
+        choices: ["cat", "dog", "elephant", "lion"]
       }
 
       assert {:ok, question} =
@@ -81,7 +81,7 @@ defmodule Quizzaz.GamesTest do
       assert %Quizzaz.Games.Question{
                content: %Quizzaz.Games.Questions.MultipleChoice{
                  answer: 2,
-                 choices: ["cat", "dog", "elephant"],
+                 choices: ["cat", "dog", "elephant", "lion"],
                  id: nil,
                  prompt: "which animal is the largest?"
                }

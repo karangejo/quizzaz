@@ -66,8 +66,15 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_call({:answer_question, player_name, answer}, _from, game_session) do
-    {:reply, {:ok, game_session.state},
-     GameSession.answer_question(game_session, player_name, answer)}
+    updated_session = GameSession.answer_question(game_session, player_name, answer)
+
+    if GameSession.all_players_answered?(updated_session) do
+      GameSessionPubSub.broadcast_to_session(game_session.id, :pause_game)
+      paused_session = GameSession.pause_game(updated_session)
+      {:reply, {:ok, paused_session.state}, paused_session}
+    else
+      {:reply, {:ok, updated_session.state}, updated_session}
+    end
   end
 
   def handle_call(:start_game_wait_for_players, _from, game_session) do

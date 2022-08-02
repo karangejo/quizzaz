@@ -119,6 +119,17 @@ defmodule Quizzaz.GameSessions.GameSession do
     end
   end
 
+  def all_players_answered?(%__MODULE__{} = game_session) do
+    answers_length = game_session.current_question + 1
+
+    Enum.all?(
+      game_session.players
+      |> Enum.map(fn %Player{answers: answers} ->
+        length(answers) == answers_length
+      end)
+    )
+  end
+
   def player_name_exists?(%__MODULE__{} = game_session, player_name) do
     game_session.players |> Enum.map(fn p -> p.name end) |> Enum.member?(player_name)
   end
