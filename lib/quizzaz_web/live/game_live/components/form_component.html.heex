@@ -2,32 +2,37 @@
   <h2><%= @title %></h2>
 
   <div class="card">
-  <.form let={f} for={@changeset} id="game-form" phx-target={@myself} phx-change="validate">
-    <%= label(f, :name, class: "input-label") %>
-    <%= text_input(f, :name, class: "input") %>
-    <%= error_tag(f, :name) %>
+    <.form let={f} for={@changeset} id="game-form" phx-target={@myself} phx-change="validate">
+      <%= label(f, :name, class: "input-label") %>
+      <%= text_input(f, :name, class: "input") %>
+      <%= error_tag(f, :name) %>
 
-    <%= label(f, :type, "Game Type", class: "input-label") %>
-    <%= select(f, :type, Quizzaz.Games.Game.game_types()) %>
-    <%= error_tag(f, :type) %>
-  </.form>
+      <%= label(f, :type, "Game Type", class: "input-label") %>
+      <%= select(f, :type, Quizzaz.Games.Game.game_types()) %>
+      <%= error_tag(f, :type) %>
+    </.form>
 
-  <.form
-    let={f}
-    for={@add_question_changeset}
-    id="add-question-form"
-    phx-target={@myself}
-    phx-change="choose_question_type"
-  >
-    <%= label(f, :question_type, "Question Type", class: "input-label") %>
-    <%= select(f, :question_type, Quizzaz.Games.Question.question_types(),
-      prompt: "select question type"
-    ) %>
-  </.form>
+    <.form
+      let={f}
+      for={@add_question_changeset}
+      id="add-question-form"
+      phx-target={@myself}
+      phx-change="choose_question_type"
+    >
+      <%= label(f, :question_type, "Question Type", class: "input-label") %>
+      <%= select(f, :question_type, Quizzaz.Games.Question.question_types(),
+        prompt: "select question type"
+      ) %>
+    </.form>
 
-  <button @click="showModal = true" disabled={is_nil(@current_question_type)} class="btn-blue m-4">Add Question</button>
+    <button
+      @click="showModal = true"
+      disabled={is_nil(@current_question_type)}
+      class="btn-blue m-4"
+    >
+      Add Question
+    </button>
   </div>
-
 
   <%= if (not is_nil(@current_question_type) and @question_action == :new_question) or @question_action == :edit_question do %>
     <div
@@ -54,32 +59,43 @@
   <% end %>
 
   <div class="card">
-  <%= if @questions != [] do %>
-    <%= for {question, index} <- Enum.with_index(@questions, 1) do %>
-      <%= case question do %>
-        <% %{answer: _answer, prompt: prompt, choices: _choices} -> %>
-          <p><%= index %></p>
-          <p><%= prompt %></p>
-        <% %{answer: answer, scrambled: _scrambled} -> %>
-          <p><%= index %></p>
-          <p><%= answer %></p>
-        <% %{answer_list: answer_list, scrambled_list: _scrambled} -> %>
-          <p><%= index %></p>
-          <p><%= Enum.join(answer_list, " ") %></p>
-        <% %{prompt: prompt} -> %>
-          <p><%= index %></p>
-          <p><%= prompt %></p>
-        <% _ -> %>
-          <% nil %>
+    <%= if @questions != [] do %>
+      <%= for {question, index} <- Enum.with_index(@questions, 1) do %>
+        <%= case question do %>
+          <% %{answer: _answer, prompt: prompt, choices: _choices} -> %>
+            <p><%= index %></p>
+            <p><%= prompt %></p>
+          <% %{answer: answer, scrambled: _scrambled} -> %>
+            <p><%= index %></p>
+            <p><%= answer %></p>
+          <% %{answer_list: answer_list, scrambled_list: _scrambled} -> %>
+            <p><%= index %></p>
+            <p><%= Enum.join(answer_list, " ") %></p>
+          <% %{prompt: prompt} -> %>
+            <p><%= index %></p>
+            <p><%= prompt %></p>
+          <% _ -> %>
+            <% nil %>
+        <% end %>
+        <button
+          @click="showModal = true"
+          phx-click="edit_question"
+          phx-value-question-index={index}
+          phx-target={@myself}
+          class="btn-blue"
+        >
+          edit
+        </button>
+        <button
+          phx-click="delete_question"
+          phx-value-question-index={index}
+          phx-target={@myself}
+          class="btn-blue"
+        >
+          delete
+        </button>
       <% end %>
-      <button @click="showModal = true" phx-click="edit_question" phx-value-question-index={index} phx-target={@myself} class="btn-blue">
-        edit
-      </button>
-      <button phx-click="delete_question" phx-value-question-index={index} phx-target={@myself} class="btn-blue">
-        delete
-      </button>
     <% end %>
-  <% end %>
   </div>
   <button class="btn-blue m-4" phx-click="save" phx-target={@myself}>
     Save Game

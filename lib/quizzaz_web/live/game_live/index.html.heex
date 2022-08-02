@@ -3,7 +3,10 @@
 
   <%= for game <- @games do %>
     <div class="card">
-      <%= live_redirect(game.name, to: Routes.game_show_path(@socket, :show, game), class: "btn-blue") %>
+      <%= live_redirect(game.name,
+        to: Routes.game_show_path(@socket, :show, game),
+        class: "btn-blue"
+      ) %>
       <%= live_patch("Edit", to: Routes.game_edit_path(@socket, :edit, game), class: "btn-blue") %>
       <%= link("Delete",
         to: "#",
