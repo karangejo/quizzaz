@@ -15,4 +15,14 @@ defmodule QuizzazWeb.GameLive.QuestionComponent do
         "Update Question"
     end
   end
+
+  defp add_or_update_submit(action) do
+    case action do
+      :new_question ->
+        "add_question"
+
+      :edit_question ->
+        "update_question"
+    end
+  end
 end

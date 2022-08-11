@@ -1,4 +1,4 @@
-<div>
+<div class="py-4">
   <%= case @current_question_type do %>
     <% "multiple_choice" -> %>
       <.form
@@ -6,37 +6,67 @@
         for={@current_question_changeset}
         id="add-mc-question-form"
         phx-target={@live_target}
-        phx-submit="add_question"
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
       >
-        <%= label(f, :prompt, class: "input-label") %>
-        <%= text_input(f, :prompt, class: "input") %>
+        <%= label(f, :prompt, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :prompt,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :prompt) %>
 
-        <%= label(f, :choice_1, class: "input-label") %>
-        <%= text_input(f, :choice_1, class: "input") %>
+        <%= label(f, :choice_1, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_1,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :choice_1) %>
 
-        <%= label(f, :choice_2, class: "input-label") %>
-        <%= text_input(f, :choice_2, class: "input") %>
+        <%= label(f, :choice_2, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_2,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :choice_2) %>
 
-        <%= label(f, :choice_3, class: "input-label") %>
-        <%= text_input(f, :choice_3, class: "input") %>
+        <%= label(f, :choice_3, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_3,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :choice_3) %>
 
-        <%= label(f, :choice_4, class: "input-label") %>
-        <%= text_input(f, :choice_4, class: "input") %>
+        <%= label(f, :choice_4, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_4,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :choice_4) %>
 
         <%= error_tag(f, :choices) %>
 
-        <%= label(f, :answer, class: "input-label") %>
-        <%= select(f, :answer, [1, 2, 3, 4], prompt: "select answer") %>
+        <%= label(f, :answer, class: "lg:text-2xl pb-2") %>
+        <%= select(f, :answer, [1, 2, 3, 4],
+          prompt: "select answer",
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :answer) %>
 
-        <div>
-          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-        </div>
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-cyan-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
       </.form>
     <% "scramble_letters" -> %>
       <.form
@@ -44,15 +74,34 @@
         for={@current_question_changeset}
         id="add-sl-question-form"
         phx-target={@live_target}
-        phx-submit="add_question"
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
       >
-        <%= label(f, :answer, class: "input-label") %>
-        <%= text_input(f, :answer, class: "input") %>
+        <%= label(f, :answer, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :answer,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :answer) %>
 
-        <div>
-          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-        </div>
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-cyan-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
       </.form>
     <% "scramble_words" -> %>
       <.form
@@ -60,15 +109,34 @@
         for={@current_question_changeset}
         id="add-sw-question-form"
         phx-target={@live_target}
-        phx-submit="add_question"
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
       >
-        <%= label(f, :answer_list, class: "input-label") %>
-        <%= text_input(f, :answer_list, class: "input") %>
+        <%= label(f, :answer_list, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :answer_list,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :answer_list) %>
 
-        <div>
-          <%= submit("Add question", phx_disable_with: "adding...", class: "btn-blue") %>
-        </div>
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-cyan-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
       </.form>
     <% "open_ended" -> %>
       <.form
@@ -76,26 +144,34 @@
         for={@current_question_changeset}
         id="add-oe-question-form"
         phx-target={@live_target}
-        phx-submit={
-          case @question_action do
-            :new_question ->
-              "add_question"
-
-            :edit_question ->
-              "update_question"
-          end
-        }
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
       >
-        <%= label(f, :prompt, class: "input-label") %>
-        <%= text_input(f, :prompt, class: "input") %>
+        <%= label(f, :prompt, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :prompt,
+          class: "rounded-lg mb-2 md:mb-4 text-purple-900 font-bold text-lg w-full"
+        ) %>
         <%= error_tag(f, :prompt) %>
 
-        <div>
-          <%= submit(add_or_update_btn(@question_action),
-            phx_disable_with: "adding...",
-            class: "btn-blue"
-          ) %>
-        </div>
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-cyan-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
       </.form>
     <% _ -> %>
       <% nil %>

@@ -76,6 +76,121 @@ defmodule QuizzazWeb.GameLive.FormComponent do
     {:noreply, updated_socket}
   end
 
+  def handle_event(
+        "update_question",
+        %{"scramble_words" => %{"answer_list" => answer_list}},
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    question = ScrambleWords.create_params(answer_list)
+
+    changeset =
+      question
+      |> ScrambleWords.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
+  def handle_event(
+        "update_question",
+        %{"scramble_letters" => %{"answer" => answer}},
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    question = ScrambleLetters.create_params(answer)
+
+    changeset =
+      question
+      |> ScrambleLetters.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
+  def handle_event(
+        "update_question",
+        %{
+          "multiple_choice" => %{
+            "prompt" => prompt,
+            "answer" => answer,
+            "choice_1" => c_1,
+            "choice_2" => c_2,
+            "choice_3" => c_3,
+            "choice_4" => c_4
+          }
+        },
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    choices = [c_1, c_2, c_3, c_4] |> Enum.reject(fn choice -> choice == "" end)
+    question = %{answer: answer, prompt: prompt, choices: choices}
+
+    changeset =
+      question
+      |> MultipleChoice.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
   def handle_event("add_question", %{"open_ended" => %{"prompt" => prompt}}, socket) do
     question = %{prompt: prompt}
 
@@ -272,6 +387,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
         %MultipleChoice{} = q ->
           {"multiple_choice",
            q
+           |> MultipleChoice.add_choices()
            |> Map.from_struct()
            |> MultipleChoice.changeset()}
 
@@ -284,6 +400,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
         %ScrambleWords{} = q ->
           {"scramble_words",
            q
+           |> ScrambleWords.answer_list_to_text()
            |> Map.from_struct()
            |> ScrambleWords.changeset()}
 
@@ -337,7 +454,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   end
 
   defp save_game(socket, :new, game_params, questions) do
-    with {:ok, game} <- Games.create_game(game_params) |> IO.inspect(),
+    with {:ok, game} <- Games.create_game(game_params),
          {:ok, _} <- Games.create_questions(game.id, questions) do
       {:noreply,
        socket

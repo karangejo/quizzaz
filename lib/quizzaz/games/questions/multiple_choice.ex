@@ -16,4 +16,14 @@ defmodule Quizzaz.Games.Questions.MultipleChoice do
 
     # TODO validate answer is within range of choices
   end
+
+  def add_choices(%__MODULE__{choices: choices} = mp) do
+    [ch_1, ch_2, ch_3, ch_4] = choices
+
+    mp
+    |> Map.put(:choice_1, ch_1)
+    |> Map.put(:choice_2, ch_2)
+    |> Map.put(:choice_3, ch_3)
+    |> Map.put(:choice_4, ch_4)
+  end
 end

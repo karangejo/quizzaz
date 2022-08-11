@@ -21,4 +21,8 @@ defmodule Quizzaz.Games.Questions.ScrambleWords do
       scrambled_list: Enum.shuffle(answer_list)
     }
   end
+
+  def answer_list_to_text(%__MODULE__{answer_list: answer_list} = scw) do
+   %{scw | answer_list: Enum.join(answer_list, " ")}
+  end
 end

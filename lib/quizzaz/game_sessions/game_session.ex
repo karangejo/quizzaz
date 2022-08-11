@@ -134,8 +134,8 @@ defmodule Quizzaz.GameSessions.GameSession do
     game_session.players |> Enum.map(fn p -> p.name end) |> Enum.member?(player_name)
   end
 
-  def get_current_question(%__MODULE__{} = game_session) do
-    Enum.at(game_session.questions, game_session.current_question)
+  def get_current_question(%__MODULE__{questions: questions, current_question: current_question}) do
+    if is_nil(current_question), do: %{}, else: Enum.at(questions, current_question)
   end
 
   def get_players(%__MODULE__{} = game_session) do
@@ -214,5 +214,9 @@ defmodule Quizzaz.GameSessions.GameSession do
 
     ((question_time_interval / 1000 - delay) * @points_per_second)
     |> round()
+  end
+
+  def sort_players(players_list) do
+    Enum.sort_by(players_list, fn %Player{score: score} -> score end)
   end
 end

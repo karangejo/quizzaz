@@ -55,6 +55,14 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:get_player, player_name})
   end
 
+  def start_countdown(name, duration) do
+    GenServer.call(via_tuple(name), {:countdown, duration})
+  end
+
+  def pause_game(name) do
+    GenServer.call(via_tuple(name), :pause_game)
+  end
+
   defp via_tuple(name) do
     {:via, Registry, {GameSessionRegistry, name}}
   end
@@ -108,7 +116,6 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
           {:new_question, GameSession.get_current_question(updated_game_session)}
         )
 
-        start_question_timer(game_session, name)
         {:reply, {:ok, game_session}, updated_game_session}
 
       {:error, game_session} ->
@@ -132,12 +139,30 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     {:reply, GameSession.is_last_question?(game_session), game_session}
   end
 
-  def handle_info({:question_finished, name}, game_session) do
-    GameSessionPubSub.broadcast_to_session(name, :pause_game)
+  def handle_call(:pause_game, _from, game_session) do
+    updated_session = GameSession.pause_game(game_session)
+    {:reply, {:ok, updated_session.state}, updated_session}
+  end
+
+  def handle_call({:countdown, duration}, _from, game_session) do
+    countdown(duration)
+    {:reply, :ok, game_session}
+  end
+
+  def handle_info({:countdown, 0}, game_session) do
+    GameSessionPubSub.broadcast_to_session(game_session.session_id, {:countdown, 0})
+    Process.sleep(1000)
+    GameSessionPubSub.broadcast_to_session(game_session.session_id, :pause_game)
     {:noreply, GameSession.pause_game(game_session)}
   end
 
-  defp start_question_timer(%GameSession{question_time_interval: interval}, name) do
-    Process.send_after(self(), {:question_finished, name}, interval)
+  def handle_info({:countdown, duration}, game_session) do
+    GameSessionPubSub.broadcast_to_session(game_session.session_id, {:countdown, duration})
+    countdown(duration - 1)
+    {:noreply, game_session}
+  end
+
+  defp countdown(duration) do
+    Process.send_after(self(), {:countdown, duration}, 1000)
   end
 end

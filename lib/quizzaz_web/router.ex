@@ -103,7 +103,8 @@ defmodule QuizzazWeb.Router do
 
   scope "/", QuizzazWeb do
     pipe_through [:browser, :game_layout]
-    live "/host/:game_id/:session_id/:interval", HostLive.Index, :index
+    live "/host/:game_id/:session_id", HostLive.Index, :index
     live "/play", PlayLive.Index, :index
+    live "/play/:name/:session_id/", PlayLive.Index, :index
   end
 end

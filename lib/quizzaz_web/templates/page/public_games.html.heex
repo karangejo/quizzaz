@@ -1,10 +1,12 @@
-<div>
-  <%= for game <- @games do %>
-    <p class="m-4"><%= game.name %></p>
-    <%= link("View", to: Routes.game_show_path(@conn, :show, game), class: "btn-blue") %>
-    <%= link("Host",
-      to: Routes.host_index_path(@conn, :index, game.id, Ecto.UUID.generate(), 30),
-      class: "btn-blue"
-    ) %>
-  <% end %>
+<div class="flex flex-col items-center my-8 text-center">
+  <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-purple-600 rounded-lg py-8 text-yellow-400 font-bold">
+    <h2 class="text-xl lg:text-3xl px-8 pb-4 lg:p-8">Click on a game to begin hosting a session!</h2>
+    <%= for game <- @games do %>
+      <%= link to: Routes.host_index_path(@conn, :index, game.id, gen_rand_id()), 
+    class: "flex flex-col lg:gap-2 items-center bg-cyan-200 rounded-xl p-4 lg:p-8 w-3/4 text-black lg:text-3xl" do %>
+        <p class="lg:text-5xl"><%= game.name %></p>
+        <p><%= game.questions %> questions</p>
+      <% end %>
+    <% end %>
+  </div>
 </div>

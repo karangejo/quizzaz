@@ -7,6 +7,7 @@ defmodule Quizzaz.Games do
   alias Quizzaz.Repo
   alias Ecto.Multi
 
+  alias Quizzaz.Games.Question
   alias Quizzaz.Games.Game
   alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords}
 
@@ -23,15 +24,21 @@ defmodule Quizzaz.Games do
     Repo.all(Game)
   end
 
-  def list_public_games do
-    Game
-    |> where(type: :public)
+  def list_public_games() do
+    Question
+    |> join(:left, [q], g in assoc(q, :game))
+    |> where([q, g], g.type == :public)
+    |> group_by([q, g], g.id)
+    |> select([q, g], %{name: g.name, id: g.id, questions: count(q.id)})
     |> Repo.all()
   end
 
   def list_games_by_user(user_id) do
-    Game
-    |> where(user_id: ^user_id)
+    Question
+    |> join(:left, [q], g in assoc(q, :game))
+    |> where([q, g], g.user_id == ^user_id)
+    |> group_by([q, g], g.id)
+    |> select([q, g], %{name: g.name, id: g.id, type: g.type, questions: count(q.id)})
     |> Repo.all()
   end
 
@@ -122,7 +129,6 @@ defmodule Quizzaz.Games do
   end
 
   # Questions
-  alias Quizzaz.Games.Question
 
   @doc """
   Creates a question.

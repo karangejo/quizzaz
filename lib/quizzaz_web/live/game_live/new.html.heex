@@ -1,9 +1,13 @@
-<.live_component
-  module={QuizzazWeb.GameLive.FormComponent}
-  id={@game.id || :new}
-  title={@page_title}
-  action={@live_action}
-  game={@game}
-  user_id={@user_id}
-  return_to={Routes.game_index_path(@socket, :index)}
-/>
+<div class="flex flex-col items-center my-8 text-center">
+  <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-purple-600 rounded-lg py-8 text-yellow-400 font-bold">
+    <.live_component
+      module={QuizzazWeb.GameLive.FormComponent}
+      id={@game.id || :new}
+      title={@page_title}
+      action={@live_action}
+      game={@game}
+      user_id={@user_id}
+      return_to={Routes.game_index_path(@socket, :index)}
+    />
+  </div>
+</div>
