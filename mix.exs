@@ -20,7 +20,7 @@ defmodule Quizzaz.MixProject do
   def application do
     [
       mod: {Quizzaz.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :mnesia]
     ]
   end
 
@@ -51,7 +51,9 @@ defmodule Quizzaz.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:polymorphic_embed, "~> 1.8.0"},
-      {:tailwind, "~> 0.1.5"}
+      {:tailwind, "~> 0.1.5"},
+      {:horde, "~> 0.8.7"},
+      {:kino, "~> 0.6.2", only: :dev}
     ]
   end
 

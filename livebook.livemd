@@ -1,0 +1,25 @@
+# Quizzaz Notebook
+
+## List all game sessions
+
+```elixir
+Quizzaz.GameSessions.RunningSessions.list_sessions()
+```
+
+## Inspect a running game session
+
+```elixir
+input = Kino.Input.text("Session Id")
+```
+
+```elixir
+session_id = Kino.Input.read(input)
+```
+
+```elixir
+Quizzaz.GameSessions.RunningSessions.session_exists?(session_id)
+```
+
+```elixir
+{:ok, game_session} = Quizzaz.GameSessions.GameSessionServer.get_current_state(session_id)
+```

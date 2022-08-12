@@ -2,7 +2,7 @@ defmodule QuizzazWeb.HostLive.Index do
   use QuizzazWeb, :live_view
 
   alias Quizzaz.GameSessions.{
-    RunningSessionsServer,
+    RunningSessions,
     GameSessionServer,
     GameSession,
     GameSessionPubSub
@@ -18,7 +18,7 @@ defmodule QuizzazWeb.HostLive.Index do
     GameSessionPubSub.subscribe_to_session(session_id)
 
     {:ok, game_session} =
-      if RunningSessionsServer.session_exists?(session_id) do
+      if RunningSessions.session_exists?(session_id) do
         GameSessionServer.get_current_state(session_id)
       else
         game = Games.get_game!(game_id)
@@ -27,7 +27,7 @@ defmodule QuizzazWeb.HostLive.Index do
                GameSession.create_game_session(game, 30 * 1000, session_id),
              {:ok, _pid} <- GameSessionServer.start_game_session(session, session_id),
              {:ok, _state} <- GameSessionServer.start_game_wait_for_players(session_id),
-             :ok <- RunningSessionsServer.put_session_name(session_id) do
+             :ok <- RunningSessions.put_session_name(session_id) do
           {:ok, session}
         end
       end

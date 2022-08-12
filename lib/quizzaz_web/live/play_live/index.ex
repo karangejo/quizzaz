@@ -5,7 +5,7 @@ defmodule QuizzazWeb.PlayLive.Index do
 
   alias Quizzaz.GameSessions.{
     GameSessionPubSub,
-    RunningSessionsServer,
+    RunningSessions,
     Player,
     GameSessionServer,
     GameSession
@@ -27,7 +27,7 @@ defmodule QuizzazWeb.PlayLive.Index do
 
   def handle_params(%{"name" => name, "session_id" => session_id}, _url, socket) do
     updated_socket =
-      with true <- RunningSessionsServer.session_exists?(session_id),
+      with true <- RunningSessions.session_exists?(session_id),
            {:ok, true} <- GameSessionServer.player_name_exists?(session_id, name),
            {:ok, game_session} <- GameSessionServer.get_current_state(session_id),
            current_question <- GameSession.get_current_question(game_session) do
@@ -89,7 +89,7 @@ defmodule QuizzazWeb.PlayLive.Index do
       |> JoinSession.changeset()
 
     updated_socket =
-      if RunningSessionsServer.session_exists?(session_id) do
+      if RunningSessions.session_exists?(session_id) do
         if changeset.valid? do
           {:ok, name_already_exists?} = GameSessionServer.player_name_exists?(session_id, name)
 

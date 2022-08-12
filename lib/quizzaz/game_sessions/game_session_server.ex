@@ -9,7 +9,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def start_game_session(%GameSession{} = game_session, name) do
-    DynamicSupervisor.start_child(
+    Horde.DynamicSupervisor.start_child(
       GameSessionSupervisor,
       {__MODULE__, {game_session, name}}
     )
@@ -64,7 +64,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   defp via_tuple(name) do
-    {:via, Registry, {GameSessionRegistry, name}}
+    {:via, Horde.Registry, {GameSessionRegistry, name}}
   end
 
   # server
