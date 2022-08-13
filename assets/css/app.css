@@ -20,10 +20,6 @@
     @apply pt-4
   }
 
-  .draggable-item {
-    @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
-  }
-
   .card {
     @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
   }

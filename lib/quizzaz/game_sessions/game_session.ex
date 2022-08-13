@@ -151,6 +151,14 @@ defmodule Quizzaz.GameSessions.GameSession do
     game_session.current_question == length(game_session.questions) - 1
   end
 
+  def set_question_duration(%__MODULE__{} = game_session, duration) do
+    %{game_session | question_time_interval: duration}
+  end
+
+  def finish_game(%__MODULE__{} = game_session) do
+    %{game_session | state: :finished}
+  end
+
   defp correct_answer?(answer, %__MODULE__{} = game_session) do
     question = get_current_question(game_session)
 

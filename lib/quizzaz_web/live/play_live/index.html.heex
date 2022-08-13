@@ -60,11 +60,17 @@
     <% :playing -> %>
       <%= case @question do %>
         <% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
-          <%= for {choice, i} <- Enum.with_index(q.choices, 1) do %>
-            <button class="btn-blue" phx-click="answer_question" phx-value-answer={i}>
-              <%= choice %>
-            </button>
-          <% end %>
+          <div class="flex flex-row items-center gap-4 h-screen">
+            <%= for two_choices <- Enum.with_index(q.choices, 1) |> Enum.chunk_every(2) do %>
+              <div class="flex flex-col items center gap-4 w-[45vw]">
+                <%= for {choice, i} <- two_choices do %>
+                  <button class="p-12 bg-purple-600 rounded-xl text-yellow-500 font-bold text-xl md:text-3xl lg:text-5xl text-center h-[45vh]" phx-click="answer_question" phx-value-answer={i}>
+                    <%= choice %>
+                  </button>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
           <.form let={f} for={:open_ended_answer} phx-submit="answer_question">
             <div class="flex flex-col items-center gap-4 my-4 lg:my-12 text-yellow-400 font-bold">
@@ -73,7 +79,7 @@
               ) %>
               <%= textarea(f, :answer,
                 class:
-                  "h-[75vh] lg:w-[75vw] rounded-lg mb-4 mx-2 text-purple-900 font-bold text-lg w-1/8"
+                  "h-[75vh] md:w-[75vw] rounded-lg mb-4 mx-2 text-purple-900 font-bold text-lg w-1/8"
               ) %>
               <%= error_tag(f, :answer) %>
 
@@ -97,39 +103,75 @@
             </div>
           </.form>
         <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
-          <h4>Display scrambled letters</h4>
-          <div phx-hook="Drag" id="scramble-letters-container" class="m-12">
-            <ul class="dropzone-letters" id="scramble-letters-list">
+          <div phx-hook="Drag" id="scramble-letters-container" class="flex flex-col items-center gap-8 p-4 mt-20 md:mt-36">
+            <ul class="dropzone-letters flex flex-row flex-wrap items-center gap-4" id="scramble-letters-list">
               <%= for {letter, i} <- Enum.with_index(@letters) do %>
-                <li class="drag-item draggable-item" draggable="true" id={to_string(i)}>
+                <li class="drag-item draggable-item bg-purple-600 p-4 md:p-8 rounded-xl text-yellow-500 font-bold text-xl md:text-3xl" draggable="true" id={to_string(i)}>
                   <%= letter %>
                 </li>
               <% end %>
             </ul>
-            <button class="btn-blue mt-12" phx-click="answer_scramble_letters">submit</button>
+              <button phx-click="answer_scramble_letters" class="m-4 flex flex-col items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8 text-cyan-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  />
+                </svg>
+                <p class="font-bold text-xl md:text-3xl text-yellow-500">Answer Question</p>
+              </button>
           </div>
         <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
-          <h4>Display scrambled list</h4>
-          <div phx-hook="Drag" id="scramble-word-container" class="m-12">
-            <ul class="dropzone-words" id="scramble-word-list">
+          <div phx-hook="Drag" id="scramble-word-container" class="flex flex-col items-center gap-8 p-4 mt-20 md:mt-36">
+            <ul class="dropzone-words flex flex-row flex-wrap items-center gap-4" id="scramble-word-list">
               <%= for {word, i} <- Enum.with_index(@words) do %>
-                <li class="drag-item draggable-item" draggable="true" id={to_string(i)}>
+                <li class="drag-item draggable-item bg-purple-600 p-4 md:p-8 rounded-xl text-yellow-500 font-bold text-xl md:text-3xl" draggable="true" id={to_string(i)}>
                   <%= word %>
                 </li>
               <% end %>
             </ul>
-            <button class="btn-blue mt-12" phx-click="answer_scramble_words">submit</button>
+              <button phx-click="answer_scramble_words" class="m-4 flex flex-col items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8 text-cyan-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  />
+                </svg>
+                <p class="font-bold text-xl md:text-3xl text-yellow-500">Answer Question</p>
+              </button>
           </div>
         <% _ -> %>
           <h4>Waiting for question</h4>
       <% end %>
     <% :answered -> %>
-      <h3>Great Job!</h3>
+      <div class="mt-12 bg-purple-600 rounded-xl m-auto">
+        <h3 class="p-20 text-yellow-500 font-bold text-xl md:text-3xl lg:text-5xl">Great Job!</h3>
+      </div>
     <% :paused -> %>
-      <h3>Game is paused</h3>
+      <div class="mt-12 bg-purple-600 rounded-xl m-auto">
+        <h3 class="p-20 text-yellow-500 font-bold text-xl md:text-3xl lg:text-5xl">The game is paused</h3>
+      </div>
     <% :finished -> %>
-      <h3>Game is finished</h3>
-      <p>your score is:</p>
-      <p><%= @player.score %></p>
+      <div class="mt-12 text-yellow-500 bg-purple-600 rounded-xl m-auto">
+      <h3 class="p-20 font-bold text-xl md:text-3xl lg:text-5xl">Game is finished</h3>
+      <p class="font-bold">your score is:</p>
+      <p class="font-bold"><%= @player.score %></p>
+      </div>
   <% end %>
 </div>

@@ -55,12 +55,16 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), {:get_player, player_name})
   end
 
-  def start_countdown(name, duration) do
-    GenServer.call(via_tuple(name), {:countdown, duration})
+  def start_countdown(name) do
+    GenServer.call(via_tuple(name), :countdown)
   end
 
   def pause_game(name) do
     GenServer.call(via_tuple(name), :pause_game)
+  end
+
+  def set_question_duration(name, duration) do
+    GenServer.call(via_tuple(name), {:set_question_duration, duration})
   end
 
   defp via_tuple(name) do
@@ -77,9 +81,15 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     updated_session = GameSession.answer_question(game_session, player_name, answer)
 
     if GameSession.all_players_answered?(updated_session) do
-      GameSessionPubSub.broadcast_to_session(game_session.id, :pause_game)
-      paused_session = GameSession.pause_game(updated_session)
-      {:reply, {:ok, paused_session.state}, paused_session}
+      if GameSession.is_last_question?(updated_session) do
+        GameSessionPubSub.broadcast_to_session(game_session.session_id, :finished)
+        finished_session = GameSession.finish_game(updated_session)
+        {:reply, {:ok, finished_session.state}, finished_session}
+      else
+        GameSessionPubSub.broadcast_to_session(game_session.session_id, :pause_game)
+        paused_session = GameSession.pause_game(updated_session)
+        {:reply, {:ok, paused_session.state}, paused_session}
+      end
     else
       {:reply, {:ok, updated_session.state}, updated_session}
     end
@@ -144,7 +154,12 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     {:reply, {:ok, updated_session.state}, updated_session}
   end
 
-  def handle_call({:countdown, duration}, _from, game_session) do
+  def handle_call({:set_question_duration, duration}, _from, game_session) do
+    updated_session = GameSession.set_question_duration(game_session, duration)
+    {:reply, {:ok, updated_session.state}, updated_session}
+  end
+
+  def handle_call(:countdown, _from, %{question_time_interval: duration} = game_session) do
     countdown(duration)
     {:reply, :ok, game_session}
   end
@@ -156,10 +171,14 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     {:noreply, GameSession.pause_game(game_session)}
   end
 
-  def handle_info({:countdown, duration}, game_session) do
-    GameSessionPubSub.broadcast_to_session(game_session.session_id, {:countdown, duration})
-    countdown(duration - 1)
-    {:noreply, game_session}
+  def handle_info({:countdown, duration}, %{state: state} = game_session) do
+    if state in [:paused, :finished] do
+      {:noreply, game_session}
+    else
+      GameSessionPubSub.broadcast_to_session(game_session.session_id, {:countdown, duration})
+      countdown(duration - 1)
+      {:noreply, game_session}
+    end
   end
 
   defp countdown(duration) do

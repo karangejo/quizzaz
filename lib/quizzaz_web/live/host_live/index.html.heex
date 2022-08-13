@@ -64,14 +64,10 @@
               <h4 class="text-5xl"><%= q.prompt %></h4>
             <% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
               <h4 class="text-5xl"><%= q.prompt %></h4>
-            <% %Quizzaz.Games.Questions.ScrambleLetters{} = q -> %>
+            <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
               <h4 class="text-5xl">Unscramble</h4>
-              <h4 class="text-5xl"><%= q.scrambled %></h4>
-            <% %Quizzaz.Games.Questions.ScrambleWords{} = q -> %>
+            <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
               <h4 class="text-5xl">Unscramble</h4>
-              <%= for word <- q.scrambled_list do %>
-                <span class="text-5xl"><%= word %></span>
-              <% end %>
           <% end %>
         <% end %>
         <button phx-click="pause_game" class="m-4 flex flex-col items-center">
