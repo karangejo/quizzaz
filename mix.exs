@@ -53,7 +53,8 @@ defmodule Quizzaz.MixProject do
       {:polymorphic_embed, "~> 1.8.0"},
       {:tailwind, "~> 0.1.5"},
       {:horde, "~> 0.8.7"},
-      {:kino, "~> 0.6.2", only: :dev}
+      {:kino, "~> 0.6.2", only: :dev},
+      {:libcluster, "~> 3.3"}
     ]
   end
 
@@ -69,7 +70,7 @@ defmodule Quizzaz.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["esbuild default --minify", "tailwind default --minify", "phx.digest"]
     ]
   end
 end

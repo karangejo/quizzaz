@@ -10,6 +10,7 @@ defmodule Quizzaz.Application do
   @impl true
   def start(_type, _args) do
     start_mnesia()
+    topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
       # Start the Ecto repository
@@ -24,10 +25,11 @@ defmodule Quizzaz.Application do
       {Horde.Registry, keys: :unique, name: GameSessionRegistry},
       # dynamic supervisor for game sessions
       {Horde.DynamicSupervisor, strategy: :one_for_one, name: GameSessionSupervisor},
+      {Cluster.Supervisor, [topologies, [name: Quizzaz.ClusterSupervisor]]}
       # Registry of running game sessions
-      #{Quizzaz.GameSessions.RunningSessionsServer, MapSet.new()},
+      # {Quizzaz.GameSessions.RunningSessionsServer, MapSet.new()},
       # Player Monitor
-      #{Quizzaz.GameSessions.PlayerMonitor, %{}}
+      # {Quizzaz.GameSessions.PlayerMonitor, %{}}
       # Start a worker by calling: Quizzaz.Worker.start_link(arg)
       # {Quizzaz.Worker, arg}
     ]
