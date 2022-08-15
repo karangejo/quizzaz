@@ -54,11 +54,14 @@ defmodule QuizzazWeb.PlayLive.Index do
               socket
           end
 
+        {:ok, player} = GameSessionServer.get_player(session_id, name)
+
         socket
         |> assign(:state, state)
         |> assign(:question, current_question)
         |> assign(:session_id, session_id)
         |> assign(:name, name)
+        |> assign(:player, player)
       else
         _ -> push_patch(socket, to: Routes.play_index_path(socket, :index))
       end

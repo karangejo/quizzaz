@@ -220,7 +220,7 @@ defmodule Quizzaz.GameSessions.GameSession do
        }) do
     delay = DateTime.diff(DateTime.utc_now(), question_start_time)
 
-    ((question_time_interval / 1000 - delay) * @points_per_second)
+    ((question_time_interval - delay) * @points_per_second)
     |> round()
   end
 

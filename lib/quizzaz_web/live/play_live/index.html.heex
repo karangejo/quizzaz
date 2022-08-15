@@ -168,10 +168,10 @@
         <h3 class="p-20 text-yellow-500 font-bold text-xl md:text-3xl lg:text-5xl">The game is paused</h3>
       </div>
     <% :finished -> %>
-      <div class="mt-12 text-yellow-500 bg-purple-600 rounded-xl m-auto">
-      <h3 class="p-20 font-bold text-xl md:text-3xl lg:text-5xl">Game is finished</h3>
+      <div class="mt-12 text-yellow-500 bg-purple-600 rounded-xl m-auto flex flex-col items-center p-8 md:p-12 lg:p-20">
+      <h3 class="font-bold text-xl md:text-3xl lg:text-5xl mb-8">Game is finished</h3>
       <p class="font-bold">your score is:</p>
-      <p class="font-bold"><%= @player.score %></p>
+      <p class="font-bold text-cyan-200"><%= @player.score %></p>
       </div>
   <% end %>
 </div>
