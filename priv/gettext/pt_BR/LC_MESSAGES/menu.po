@@ -1,0 +1,64 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:61
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:258
+msgid "Settings"
+msgstr "Configurações"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:131
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:207
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:328
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:407
+msgid "Browse"
+msgstr "Jogos"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:95
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:292
+msgid "Create"
+msgstr "Criar"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:188
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:388
+msgid "Log In"
+msgstr "Log In"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:78
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:275
+msgid "Log Out"
+msgstr "Sair"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:112
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:309
+msgid "My Stuff"
+msgstr "Minhas Coisas"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:153
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:229
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:350
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:429
+msgid "Play"
+msgstr "Jogar"
+
+#, elixir-format, ex-autogen
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:171
+#: lib/quizzaz_web/templates/layout/_user_menu.html.heex:371
+msgid "Sign Up"
+msgstr "Inscrever-se"

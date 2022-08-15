@@ -59,6 +59,9 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
+# config for locales
+config :quizzaz, QuizzazWeb.Gettext, default_locale: "en", locales: ~w(pt_BR en)
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

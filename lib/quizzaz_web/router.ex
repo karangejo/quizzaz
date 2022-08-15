@@ -10,6 +10,7 @@ defmodule QuizzazWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug QuizzazWeb.Locales, "en"
   end
 
   pipeline :root_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :root})
