@@ -5,7 +5,8 @@ defmodule Quizzaz.GameSessions.GameSession do
   alias Quizzaz.Games.Questions.{MultipleChoice, OpenEnded, ScrambleWords, ScrambleLetters}
 
   @points_per_second 2000
-  @wrong_answer_points 1000
+  @wrong_answer_points 2000
+  @no_answer_points 1000
 
   @enforce_keys [:state, :questions]
   @type game_state :: :created | :waiting_for_players | :playing | :paused | :finished
@@ -56,7 +57,26 @@ defmodule Quizzaz.GameSessions.GameSession do
   end
 
   def pause_game(%__MODULE__{} = game_session) do
-    %{game_session | state: :paused, question_start_time: nil}
+    updated_session = handle_unanswered_players(game_session)
+    %{updated_session | state: :paused, question_start_time: nil}
+  end
+
+  def handle_unanswered_players(
+        %__MODULE__{players: players, current_question: current_question} = game_session
+      ) do
+    answers_length = current_question + 1
+
+    updated_players =
+      players
+      |> Enum.map(fn %Player{answers: answers, score: current_score} = player ->
+        if length(answers) < answers_length do
+          %{player | answers: answers ++ [nil], score: current_score + @no_answer_points}
+        else
+          player
+        end
+      end)
+
+    %{game_session | players: updated_players}
   end
 
   def next_question(
