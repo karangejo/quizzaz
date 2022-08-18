@@ -3,6 +3,8 @@ defmodule QuizzazWeb.Locales do
 
   @locales Gettext.known_locales(QuizzazWeb.Gettext)
 
+  def locale_names, do: @locales
+
   def init(default_locale), do: default_locale
 
   def call(%Plug.Conn{params: %{"locale" => locale}} = conn, _default_locale)

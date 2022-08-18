@@ -15,8 +15,9 @@
     >
     </script>
   </head>
-  <body class="bg-sky-500">
+  <body class={"#{get_theme(@conn)} bg-skin-primary"}>
     <header>
+      <%= render("_settings.html", assigns) %>
       <%= render("_user_menu.html", assigns) %>
     </header>
     <div class="w-full">

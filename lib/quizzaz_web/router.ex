@@ -11,6 +11,7 @@ defmodule QuizzazWeb.Router do
     plug :put_secure_browser_headers
     plug :fetch_current_user
     plug QuizzazWeb.Locales, "en"
+    plug QuizzazWeb.Themes, "grapes"
   end
 
   pipeline :root_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :root})

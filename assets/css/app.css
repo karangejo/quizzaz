@@ -2,32 +2,50 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* themes */
+@layer base {
+  :root {
+    --color-text-primary: 235, 229, 52;
+    --color-text-secondary: 165, 243, 252;
+    --color-text-info: 0, 0, 0;
+    --color-text-edit: 30, 58, 138;
+    --color-text-delete: 185, 28, 28;
+    --color-text-input: 99, 28, 149;
+    --color-background-primary: 14, 165, 233;
+    --color-background-secondary: 147, 51, 234;
+    --color-background-item: 165, 243, 252;
+  }
+
+  .theme-grapes {
+    --color-text-primary: 235, 229, 52;
+    --color-text-secondary: 165, 243, 252;
+    --color-text-info: 0, 0, 0;
+    --color-text-edit: 30, 58, 138;
+    --color-text-delete: 185, 28, 28;
+    --color-text-input: 99, 28, 149;
+    --color-background-primary: 14, 165, 233;
+    --color-background-secondary: 147, 51, 234;
+    --color-background-item: 165, 243, 252;
+  }
+
+  .theme-peaches {
+    --color-text-primary: 252, 10, 3;
+    --color-text-secondary: 4, 191, 17;
+    --color-text-info: 81, 0, 152;
+    --color-text-edit: 42, 166, 28;
+    --color-text-delete: 243, 119, 81;
+    --color-text-input: 0, 0, 0;
+    --color-background-primary: 239, 189, 245;
+    --color-background-secondary: 246, 242, 133;
+    --color-background-item: 252, 226, 253;
+  }
+}
+
 /* custom components */
 @layer components {
-  .btn-blue {
-    @apply bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded
-  }
-
-  .input-label {
-    @apply block text-xs font-medium text-gray-500
-  }
-
-  .input {
-    @apply w-full p-3 mt-1 text-sm border-2 border-gray-200 rounded w-60
-  }
-
   .input-error {
     @apply pt-4
   }
-
-  .card {
-    @apply relative block p-8 border border-gray-100 shadow-xl rounded-xl
-  }
-
-  #content {
-    @apply p-4 text-center
-  }
-
 }
 
 /* This file is for your main application CSS */

@@ -9,12 +9,12 @@
   >
     <%= label(f, :name, "Game Title", class: "lg:text-2xl pt-4 pb-2") %>
     <%= text_input(f, :name,
-      class: "rounded-lg mb-4 mx-2 text-purple-900 font-bold text-lg lg:w-1/3"
+      class: "rounded-lg mb-4 mx-2 text-skin-input font-bold text-lg lg:w-1/3"
     ) %>
     <%= error_tag(f, :name) %>
     <%= label(f, :type, "Game Type", class: "lg:text-2xl pt-4 pb-2") %>
     <%= select(f, :type, Quizzaz.Games.Game.game_types(),
-      class: "rounded-lg mb-4 mx-2 text-purple-900 font-bold text-lg lg:w-1/3"
+      class: "rounded-lg mb-4 mx-2 text-skin-input font-bold text-lg lg:w-1/3"
     ) %>
     <%= error_tag(f, :type) %>
   </.form>
@@ -29,7 +29,7 @@
     <%= label(f, :question_type, "Question Type", class: "lg:text-2xl pt-4 pb-2") %>
     <%= select(f, :question_type, Quizzaz.Games.Question.question_types(),
       prompt: "select question type",
-      class: "rounded-lg mb-2 md:mb-4 mx-2 text-purple-900 font-bold text-lg lg:w-1/3"
+      class: "rounded-lg mb-2 md:mb-4 mx-2 text-skin-input font-bold text-lg lg:w-1/3"
     ) %>
   </.form>
 
@@ -42,7 +42,7 @@
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class={
-        "#{if is_nil(@current_question_type), do: "text-gray-200", else: "text-cyan-200"} h-8 w-8"
+        "#{if is_nil(@current_question_type), do: "text-gray-200", else: "text-skin-secondary"} h-8 w-8"
       }
       fill="none"
       viewBox="0 0 24 24"
@@ -67,7 +67,7 @@
       <div
         x-show="showModal"
         x-on:click.away="showModal = false"
-        class="bg-purple-900 w-11/12 md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-lg py-4 text-left px-6"
+        class="bg-skin-secondary w-11/12 md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-lg py-4 text-left px-6"
       >
         <.live_component
           module={QuizzazWeb.GameLive.QuestionComponent}
@@ -83,7 +83,7 @@
 
   <%= if @questions != [] do %>
     <%= for {question, index} <- Enum.with_index(@questions, 1) do %>
-      <div class="flex flex-col lg:flex-row justify-between items-center bg-cyan-200 rounded-xl p-4 lg:p-8 w-3/4 text-black lg:text-3xl m-4">
+      <div class="flex flex-col lg:flex-row justify-between items-center bg-skin-item rounded-xl p-4 lg:p-8 w-3/4 text-skin-info lg:text-3xl m-4">
         <p class="self-start"><%= index %>)</p>
         <div class="flex flex-col items-center gap-2 mb-4">
           <%= case question do %>
@@ -109,7 +109,7 @@
             phx-click="edit_question"
             phx-value-question-index={index}
             phx-target={@myself}
-            class="text-blue-900"
+            class="text-skin-edit"
           >
             edit
           </button>
@@ -117,7 +117,7 @@
             phx-click="delete_question"
             phx-value-question-index={index}
             phx-target={@myself}
-            class="text-red-700"
+            class="text-skin-delete"
           >
             delete
           </button>
@@ -128,7 +128,7 @@
   <button phx-click="save" phx-target={@myself} class="m-4 flex flex-col items-center">
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="h-8 w-8 text-cyan-200"
+      class="h-8 w-8 text-skin-secondary"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

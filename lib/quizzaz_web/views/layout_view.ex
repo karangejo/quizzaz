@@ -8,4 +8,14 @@ defmodule QuizzazWeb.LayoutView do
   def active_nav?(req_path, nav_path) do
     req_path == nav_path
   end
+
+  def get_theme(conn) do
+    case conn.assigns.theme do
+      "grapes" -> "theme-grapes"
+      "peaches" -> "theme-peaches"
+    end
+  end
+
+  defdelegate theme_names, to: QuizzazWeb.Themes
+  defdelegate locale_names, to: QuizzazWeb.Locales
 end

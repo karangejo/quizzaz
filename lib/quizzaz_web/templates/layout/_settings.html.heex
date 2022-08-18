@@ -1,0 +1,56 @@
+<div x-data="{themeMenuOpen: false, languageMenuOpen: false}" class="flex flex-col items-center">
+  <div class="absolute right-0 flex flex-row item-center gap-4 p-4">
+    <svg
+      @click="themeMenuOpen = true"
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 text-skin-primary"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+      />
+    </svg>
+    <svg
+      @click="languageMenuOpen = true"
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 text-skin-primary"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+      />
+    </svg>
+  </div>
+
+  <div
+    x-show="themeMenuOpen"
+    x-cloak
+    x-on:click.away="themeMenuOpen = false"
+    class="absolute right-0 mr-12 mt-12 flex flex-col items-start bg-skin-secondary rounded-lg p-4 text-skin-secondary"
+  >
+    <%= for theme <- theme_names() do %>
+      <a href={"?theme=#{theme}"}><%= theme %></a>
+    <% end %>
+  </div>
+
+  <div
+    x-show="languageMenuOpen"
+    x-cloak
+    x-on:click.away="languageMenuOpen = false"
+    class="absolute right-0 mr-4 mt-12 flex flex-col items-start bg-skin-secondary rounded-lg p-4 text-skin-secondary"
+  >
+    <%= for locale <- locale_names() do %>
+      <a href={"?locale=#{locale}"}><%= locale %></a>
+    <% end %>
+  </div>
+</div>

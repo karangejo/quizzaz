@@ -1,7 +1,7 @@
 <div class="flex flex-col items-center my-8 text-center">
-  <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-purple-600 rounded-lg py-8 lg:py-20 text-yellow-400 font-bold">
+  <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-skin-secondary rounded-lg py-8 lg:py-20 text-skin-primary font-bold">
     <%= for game <- @games do %>
-      <div class="flex flex-col lg:flex-row gap-2 justify-between items-center bg-cyan-200 rounded-xl p-4 lg:p-8 w-3/4 text-black lg:text-3xl">
+      <div class="flex flex-col lg:flex-row gap-2 justify-between items-center bg-skin-item rounded-xl p-4 lg:p-8 w-3/4 text-skin-info lg:text-3xl">
         <div class="flex flex-col items-center lg:items-start gap-2">
           <p class="text-xl lg:text-5xl"><%= game.name %></p>
           <p><%= "#{game.type} / #{game.questions} questions" %></p>
@@ -9,14 +9,14 @@
         <div class="flex flex-row lg:flex-col items-center gap-12 lg:gap-2">
           <%= live_patch("Edit",
             to: Routes.game_edit_path(@socket, :edit, game.id),
-            class: "text-blue-900"
+            class: "text-skin-edit"
           ) %>
           <%= link("Delete",
             to: "#",
             phx_click: "delete",
             phx_value_id: game.id,
             data: [confirm: "Are you sure?"],
-            class: "text-red-700"
+            class: "text-skin-delete"
           ) %>
         </div>
       </div>

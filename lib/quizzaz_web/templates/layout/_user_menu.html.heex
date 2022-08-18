@@ -15,7 +15,7 @@
   <div class="flex flex-row items-center justify-between lg:justify-around lg:gap-20 w-full p-8 lg:p-20">
     <%= link("Quizzaz",
       to: Routes.page_path(@conn, :home),
-      class: "text-3xl lg:text-8xl font-bold text-yellow-400"
+      class: "text-3xl lg:text-8xl font-bold text-skin-primary"
     ) %>
     <img
       @click="showMenu = true"
@@ -34,14 +34,14 @@
     x-cloak
     @click.outside="showMenu = false"
     id="mobile-menu"
-    class="opacity-95 absolute top-24 right-4 bg-purple-600 rounded-lg p-4 text-yellow-400 font-bold shadow-lg"
+    class="opacity-95 absolute top-24 right-4 bg-skin-secondary rounded-lg p-4 text-skin-primary font-bold shadow-lg"
   >
     <%= if @current_user do %>
       <p class="m-4"><%= @current_user.email %></p>
       <a class="m-4 flex items-start gap-2" href={settings_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -63,7 +63,7 @@
       <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "m-4 flex items-start gap-2" do %>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -80,7 +80,7 @@
       <a class="m-4 flex items-start gap-2" href={new_game_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -97,7 +97,7 @@
       <a class="m-4 flex items-start gap-2" href={my_stuff_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -114,7 +114,7 @@
       <a class="m-4 flex items-start gap-2" href={browse_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -133,7 +133,7 @@
       <a class="m-4 flex items-start gap-2" href={play_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -156,7 +156,7 @@
       <a class="m-4 flex items-start gap-2" href={sign_up_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -173,7 +173,7 @@
       <a class="m-4 flex items-start gap-2" href={log_in_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -190,7 +190,7 @@
       <a class="m-4 flex items-start gap-2" href={browse_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -209,7 +209,7 @@
       <a class="m-4 flex items-start gap-2" href={play_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-cyan-200"
+          class="h-6 w-6 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -232,13 +232,13 @@
   </div>
   <div
     id="desktop-menu"
-    class="hidden lg:flex w-3/4 items-center justify-around mx-20 bg-purple-600 rounded-lg p-4 text-yellow-400 font-bold"
+    class="hidden lg:flex w-3/4 items-center justify-around mx-20 bg-skin-secondary rounded-lg p-4 text-skin-primary font-bold"
   >
     <%= if @current_user do %>
       <a class="m-4 flex flex-col items-center gap-2" href={settings_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -260,7 +260,7 @@
       <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "m-4 flex flex-col items-center gap-2" do %>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -277,7 +277,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={new_game_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10- w-10 text-cyan-200"
+          class="h-10- w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -294,7 +294,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={my_stuff_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -311,7 +311,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={browse_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -330,7 +330,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={play_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -356,7 +356,7 @@
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -373,7 +373,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={log_in_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -390,7 +390,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={browse_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -409,7 +409,7 @@
       <a class="m-4 flex flex-col items-center gap-2" href={play_path}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10 text-cyan-200"
+          class="h-10 w-10 text-skin-secondary"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
