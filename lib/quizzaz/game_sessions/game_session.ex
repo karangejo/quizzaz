@@ -56,6 +56,23 @@ defmodule Quizzaz.GameSessions.GameSession do
     end
   end
 
+  def reset_game(%__MODULE__{players: players} = game_session) do
+    %{
+      game_session
+      | state: :waiting_for_players,
+        current_question: nil,
+        players: reset_players(players),
+        question_start_time: nil
+    }
+  end
+
+  defp reset_players(players) do
+    players
+    |> Enum.map(fn %Player{} = player ->
+      %{player | score: 0, answers: []}
+    end)
+  end
+
   def pause_game(%__MODULE__{} = game_session) do
     updated_session = handle_unanswered_players(game_session)
     %{updated_session | state: :paused, question_start_time: nil}

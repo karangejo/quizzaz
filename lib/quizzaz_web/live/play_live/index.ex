@@ -223,6 +223,26 @@ defmodule QuizzazWeb.PlayLive.Index do
      |> assign(:state, :finished)}
   end
 
+  def handle_info(:reset_game, socket) do
+    {:noreply,
+     socket
+     |> assign(:state, :joined)
+     |> assign(:question, %{})}
+  end
+
+  def handle_info(:terminate_game, socket) do
+    changeset = JoinSession.changeset(%{})
+
+    {:noreply,
+     socket
+     |> assign(:state, :not_joined)
+     |> assign(:session_id, nil)
+     |> assign(:name, nil)
+     |> assign(:question, %{})
+     |> assign(:join_changeset, changeset)
+     |> push_patch(to: Routes.play_index_path(socket, :index))}
+  end
+
   def handle_info(unused_message, socket) do
     IO.inspect(unused_message)
     {:noreply, socket}

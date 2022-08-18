@@ -1,5 +1,5 @@
 defmodule Quizzaz.GameSessions.GameSessionServer do
-  use GenServer
+  use GenServer, restart: :transient
 
   alias Quizzaz.GameSessions.{GameSession, GameSessionPubSub}
 
@@ -13,6 +13,10 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
       GameSessionSupervisor,
       {__MODULE__, {game_session, name}}
     )
+  end
+
+  def terminate_game_session(name) do
+    GenServer.cast(via_tuple(name), :terminate_session)
   end
 
   def answer_question(name, player_name, answer) do
@@ -63,6 +67,10 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
     GenServer.call(via_tuple(name), :pause_game)
   end
 
+  def reset_game(name) do
+    GenServer.call(via_tuple(name), :reset_game)
+  end
+
   def set_question_duration(name, duration) do
     GenServer.call(via_tuple(name), {:set_question_duration, duration})
   end
@@ -75,6 +83,12 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
 
   def init(%GameSession{} = game_session) do
     {:ok, game_session}
+  end
+
+  def handle_cast(:terminate_session, game_session) do
+    Quizzaz.GameSessions.RunningSessions.remove_session_name(game_session.session_id)
+    GameSessionPubSub.broadcast_to_session(game_session.session_id, :terminate_game)
+    {:stop, :shutdown, game_session}
   end
 
   def handle_call({:answer_question, player_name, answer}, _from, game_session) do
@@ -126,7 +140,7 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
           {:new_question, GameSession.get_current_question(updated_game_session)}
         )
 
-        {:reply, {:ok, game_session}, updated_game_session}
+        {:reply, {:ok, updated_game_session}, updated_game_session}
 
       {:error, game_session} ->
         {:reply, {:error, game_session}, game_session}
@@ -151,6 +165,12 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
 
   def handle_call(:pause_game, _from, game_session) do
     updated_session = GameSession.pause_game(game_session)
+    {:reply, {:ok, updated_session.state}, updated_session}
+  end
+
+  def handle_call(:reset_game, _from, game_session) do
+    updated_session = GameSession.reset_game(game_session)
+    GameSessionPubSub.broadcast_to_session(game_session.session_id, :reset_game)
     {:reply, {:ok, updated_session.state}, updated_session}
   end
 

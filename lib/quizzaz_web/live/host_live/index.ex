@@ -1,6 +1,8 @@
 defmodule QuizzazWeb.HostLive.Index do
   use QuizzazWeb, :live_view
 
+  @terminate_seconds 30
+
   alias Quizzaz.GameSessions.{
     RunningSessions,
     GameSessionServer,
@@ -72,11 +74,13 @@ defmodule QuizzazWeb.HostLive.Index do
     GameSessionPubSub.broadcast_to_session(session_id, :start_game)
 
     case GameSessionServer.start_next_question(session_id) do
-      {:ok, _} ->
+      {:ok, game_session} ->
+        current_question = GameSession.get_current_question(game_session)
         GameSessionServer.start_countdown(session_id)
 
         {:noreply,
          socket
+         |> assign(:question, current_question)
          |> assign(:state, :playing)}
 
       {:error, _} ->
@@ -108,6 +112,11 @@ defmodule QuizzazWeb.HostLive.Index do
     {:noreply, socket}
   end
 
+  def handle_event("reset_game", _params, %{assigns: %{session_id: session_id}} = socket) do
+    GameSessionServer.reset_game(session_id)
+    {:noreply, socket}
+  end
+
   def handle_info({:player_left, player}, socket) do
     {:ok, updated_session} = GameSessionServer.remove_player(socket.assigns.session_id, player)
 
@@ -129,6 +138,7 @@ defmodule QuizzazWeb.HostLive.Index do
   def handle_info(:finished, socket) do
     {:ok, players} = GameSessionServer.get_players(socket.assigns.session_id)
     sorted_players = GameSession.sort_players(players)
+    socket = start_shutdown(socket)
 
     {:noreply,
      socket
@@ -156,14 +166,52 @@ defmodule QuizzazWeb.HostLive.Index do
     end
   end
 
+  def handle_info(
+        :reset_game,
+        %{assigns: %{session_id: session_id, terminate_pid: terminate_pid}} = socket
+      ) do
+    Process.exit(terminate_pid, :kill)
+    {:ok, game_session} = GameSessionServer.get_current_state(session_id)
+
+    {:noreply,
+     socket
+     |> assign(:state, game_session.state)
+     |> assign(:game_session, game_session)
+     |> assign(:question, game_session.current_question)
+     |> assign(:players, GameSession.sort_players(game_session.players))
+     |> assign(:question_duration, game_session.question_time_interval)
+     |> assign(:countdown, game_session.question_time_interval)}
+  end
+
   def handle_info({:countdown, duration}, socket) do
     {:noreply,
      socket
      |> assign(:countdown, duration)}
   end
 
+  def handle_info(:terminate, %{assigns: %{session_id: session_id}} = socket) do
+    GameSessionServer.terminate_game_session(session_id)
+
+    {:noreply,
+     socket
+     |> push_redirect(to: Routes.page_path(socket, :index))}
+  end
+
   def handle_info(unused_message, socket) do
     IO.inspect(unused_message)
     {:noreply, socket}
+  end
+
+  defp start_shutdown(socket) do
+    pid = self()
+
+    terminate_pid =
+      spawn(fn ->
+        Process.sleep(@terminate_seconds * 1000)
+        Process.send(pid, :terminate, [])
+      end)
+
+    socket
+    |> assign(:terminate_pid, terminate_pid)
   end
 end
