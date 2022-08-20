@@ -46,6 +46,10 @@
   .input-error {
     @apply pt-4
   }
+  a, button {
+    @apply hover:opacity-80
+  }
+  
 }
 
 /* This file is for your main application CSS */

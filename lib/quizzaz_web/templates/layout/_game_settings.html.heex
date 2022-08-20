@@ -1,5 +1,12 @@
 <div x-data="{themeMenuOpen: false, languageMenuOpen: false}" class="flex flex-col items-center">
   <div class="absolute right-0 flex flex-row item-center gap-4 p-4">
+    <%= link to: Routes.page_path(@conn, :home), onclick: "return confirm('Are you sure you want to leave the game?')" do %>
+      <img
+        class="h-5"
+        src={Routes.static_path(@conn, "/images/question.png")}
+        alt="question head"
+      />
+    <% end %>
     <svg
       @click="themeMenuOpen = true"
       xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +23,7 @@
       />
     </svg>
     <svg
-      @click="languageMenuOpen = true "
+      @click="languageMenuOpen = true"
       xmlns="http://www.w3.org/2000/svg"
       class="h-6 w-6 text-skin-primary hover:opacity-80"
       fill="none"

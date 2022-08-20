@@ -330,16 +330,16 @@ defmodule QuizzazWeb.GameLive.FormComponent do
       ) do
     current_question_changeset =
       case question_type do
-        "multiple_choice" ->
+        "multiple choice" ->
           MultipleChoice.changeset(%{})
 
-        "scramble_letters" ->
+        "scramble letters" ->
           ScrambleLetters.changeset(%{})
 
-        "scramble_words" ->
+        "scramble words" ->
           ScrambleWords.changeset(%{})
 
-        "open_ended" ->
+        "open ended" ->
           OpenEnded.changeset(%{})
 
         _ ->

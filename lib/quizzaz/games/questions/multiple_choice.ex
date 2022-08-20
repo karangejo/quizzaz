@@ -13,8 +13,20 @@ defmodule Quizzaz.Games.Questions.MultipleChoice do
     |> cast(attrs, [:prompt, :answer, :choices])
     |> validate_required([:prompt, :answer, :choices])
     |> validate_length(:choices, min: 4)
+    |> validate_answer_in_choices()
+  end
 
-    # TODO validate answer is within range of choices
+  defp validate_answer_in_choices(changeset) do
+    choices = length(get_field(changeset, :choices))
+
+    changeset
+    |> validate_change(:answer, fn :answer, answer ->
+      if answer > 0 and answer <= choices do
+        []
+      else
+        [message: "Answer must be within the range of choices"]
+      end
+    end)
   end
 
   def add_choices(%__MODULE__{choices: choices} = mp) do

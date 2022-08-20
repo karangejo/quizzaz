@@ -1,5 +1,6 @@
 defmodule QuizzazWeb.PlayLive.Index do
   use QuizzazWeb, :live_view
+  require Logger
 
   alias QuizzazWeb.PlayLive.Schemas.JoinSession
 
@@ -96,7 +97,11 @@ defmodule QuizzazWeb.PlayLive.Index do
         if changeset.valid? do
           {:ok, name_already_exists?} = GameSessionServer.player_name_exists?(session_id, name)
 
-          if not name_already_exists? do
+          if name_already_exists? do
+            socket
+            |> put_flash(:error, "This name already exists")
+            |> assign(:join_changeset, changeset)
+          else
             player = Player.create_new_player(name)
 
             case GameSessionServer.player_join(session_id, player) do
@@ -116,10 +121,6 @@ defmodule QuizzazWeb.PlayLive.Index do
                 |> put_flash(:error, "This game has already started")
                 |> assign(:join_changeset, changeset)
             end
-          else
-            socket
-            |> put_flash(:error, "This name already exists")
-            |> assign(:join_changeset, changeset)
           end
         else
           socket
@@ -243,8 +244,8 @@ defmodule QuizzazWeb.PlayLive.Index do
      |> push_patch(to: Routes.play_index_path(socket, :index))}
   end
 
-  def handle_info(unused_message, socket) do
-    IO.inspect(unused_message)
+  def handle_info(unused_message, %{assigs: %{name: name}} = socket) do
+    Logger.info("unused message from player #{name}: #{inspect(unused_message)}")
     {:noreply, socket}
   end
 end

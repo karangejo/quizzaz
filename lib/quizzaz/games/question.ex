@@ -9,7 +9,7 @@ defmodule Quizzaz.Games.Question do
   alias Quizzaz.Games.Questions.ScrambleWords
   alias Quizzaz.Games.Questions.ScrambleLetters
 
-  @question_types [:multiple_choice, :open_ended, :scramble_words, :scramble_letters]
+  @question_types [:"multiple choice", :"open ended", :"scramble words", :"scramble letters"]
 
   def question_types, do: @question_types
 

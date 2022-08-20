@@ -28,14 +28,14 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can create a game session from a game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       assert %Quizzaz.GameSessions.GameSession{
                name: "some name",
                current_question: nil,
                players: [],
                question_start_time: nil,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.MultipleChoice{
                    answer: 2,
@@ -55,7 +55,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       started_game =
         game_session
@@ -65,7 +65,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can add a player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -82,7 +82,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start the first question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -106,7 +106,7 @@ defmodule Quizzaz.GameSessionTest do
                  }
                ],
                question_start_time: _start_time,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.MultipleChoice{
                    answer: 2,
@@ -126,7 +126,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question correctly", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -145,7 +145,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question incorrectly", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -164,7 +164,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question with non existent player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -183,7 +183,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can pause the game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -204,7 +204,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer 2 questions", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -229,7 +229,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can finish game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -274,14 +274,14 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can create a game session from a game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       assert %Quizzaz.GameSessions.GameSession{
                name: "some name",
                current_question: nil,
                players: [],
                question_start_time: nil,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.OpenEnded{
                    prompt: "What do you think about cats?"
@@ -295,7 +295,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       started_game =
         game_session
@@ -305,7 +305,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can add a player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -322,7 +322,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start the first question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -346,7 +346,7 @@ defmodule Quizzaz.GameSessionTest do
                  }
                ],
                question_start_time: _start_time,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.OpenEnded{
                    prompt: "What do you think about cats?"
@@ -360,7 +360,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -385,7 +385,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question with non existent player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -404,7 +404,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can pause the game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -425,7 +425,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer 2 questions", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -457,7 +457,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can finish game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -505,14 +505,14 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can create a game session from a game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       assert %Quizzaz.GameSessions.GameSession{
                name: "some name",
                current_question: nil,
                players: [],
                question_start_time: nil,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.ScrambleLetters{
                    answer: "kitten",
@@ -528,7 +528,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       started_game =
         game_session
@@ -538,7 +538,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can add a player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -555,7 +555,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start the first question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -579,7 +579,7 @@ defmodule Quizzaz.GameSessionTest do
                  }
                ],
                question_start_time: _start_time,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.ScrambleLetters{
                    answer: "kitten",
@@ -595,7 +595,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -620,7 +620,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question incorrectly", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -639,7 +639,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question with non existent player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -658,7 +658,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can pause the game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -679,7 +679,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer 2 questions", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -711,7 +711,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can finish game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -759,14 +759,14 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can create a game session from a game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       assert %Quizzaz.GameSessions.GameSession{
                name: "some name",
                current_question: nil,
                players: [],
                question_start_time: nil,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.ScrambleWords{
                    answer_list: ~w(kittens are cute),
@@ -782,7 +782,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       started_game =
         game_session
@@ -792,7 +792,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can add a player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -809,7 +809,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can start the first question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -833,7 +833,7 @@ defmodule Quizzaz.GameSessionTest do
                  }
                ],
                question_start_time: _start_time,
-               question_time_interval: 30000,
+               question_time_interval: 30_000,
                questions: [
                  %Quizzaz.Games.Questions.ScrambleWords{
                    answer_list: ~w(kittens are cute),
@@ -849,7 +849,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -874,7 +874,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question incorrectly", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -893,7 +893,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer the question with non existent player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -912,7 +912,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can pause the game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -933,7 +933,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can answer 2 questions", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -965,7 +965,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can finish game", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -1013,7 +1013,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "can remove a player", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player = %Player{
         name: "player 1"
@@ -1055,7 +1055,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "returns false when not all players have answered", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player_1 = %Player{
         name: "player 1"
@@ -1081,7 +1081,7 @@ defmodule Quizzaz.GameSessionTest do
     end
 
     test "returns true when all players have answered", %{game: game} do
-      {:ok, game_session} = GameSession.create_game_session(game, 30000, game.id)
+      {:ok, game_session} = GameSession.create_game_session(game, 30_000, game.id)
 
       player_1 = %Player{
         name: "player 1"

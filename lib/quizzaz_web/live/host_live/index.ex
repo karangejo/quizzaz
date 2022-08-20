@@ -1,5 +1,6 @@
 defmodule QuizzazWeb.HostLive.Index do
   use QuizzazWeb, :live_view
+  require Logger
 
   @terminate_seconds 30
 
@@ -35,10 +36,10 @@ defmodule QuizzazWeb.HostLive.Index do
       end
 
     current_question =
-      if not is_nil(game_session.current_question) do
-        Enum.at(game_session.questions, game_session.current_question)
-      else
+      if is_nil(game_session.current_question) do
         %{}
+      else
+        Enum.at(game_session.questions, game_session.current_question)
       end
 
     {:ok,
@@ -197,8 +198,8 @@ defmodule QuizzazWeb.HostLive.Index do
      |> push_redirect(to: Routes.page_path(socket, :index))}
   end
 
-  def handle_info(unused_message, socket) do
-    IO.inspect(unused_message)
+  def handle_info(unused_message, %{assigns: %{session_id: session_id}} = socket) do
+    Logger.info("unused message from host of session #{session_id}: #{inspect(unused_message)}")
     {:noreply, socket}
   end
 

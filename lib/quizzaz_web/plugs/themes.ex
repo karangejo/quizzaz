@@ -20,7 +20,6 @@ defmodule QuizzazWeb.Themes do
   end
 
   defp set_theme(conn, theme) do
-    IO.inspect(theme)
     conn
     |> put_resp_cookie("theme", theme, max_age: :timer.hours(24) * 365)
     |> put_session(:theme, theme)

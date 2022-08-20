@@ -1,12 +1,7 @@
 <div class="flex flex-col items-center">
   <%= case @state do %>
     <% state when state in [:waiting_for_players, :created] -> %>
-      <img
-        class="w-48 m-20"
-        src={Routes.static_path(@socket, "/images/question.png")}
-        alt="question head"
-      />
-      <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-skin-secondary rounded-lg py-8 text-skin-primary font-bold">
+      <div class="flex flex-col w-3/4 items-center gap-4 justify-around mt-20 mx-20 bg-skin-secondary rounded-lg py-8 text-skin-primary font-bold">
         <h3 class="text-3xl">To join this game please enter the following code:</h3>
         <p class="text-skin-info text-5xl"><%= @session_id %></p>
 

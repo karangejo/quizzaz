@@ -21,6 +21,7 @@ defmodule QuizzazWeb.Locales do
 
     conn
     |> put_resp_cookie("locale", locale, max_age: :timer.hours(24) * 365)
+    |> put_session(:locale, locale)
     |> assign(:locale, locale)
   end
 end
