@@ -29,8 +29,7 @@ defmodule QuizzazWeb.HostLive.Index do
         with {:ok, session} <-
                GameSession.create_game_session(game, 30, session_id),
              {:ok, _pid} <- GameSessionServer.start_game_session(session, session_id),
-             {:ok, _state} <- GameSessionServer.start_game_wait_for_players(session_id),
-             :ok <- RunningSessions.put_session_name(session_id) do
+             {:ok, _state} <- GameSessionServer.start_game_wait_for_players(session_id) do
           {:ok, session}
         end
       end
@@ -171,7 +170,7 @@ defmodule QuizzazWeb.HostLive.Index do
         :reset_game,
         %{assigns: %{session_id: session_id, terminate_pid: terminate_pid}} = socket
       ) do
-    Process.exit(terminate_pid, :kill)
+    Task.Supervisor.terminate_child(Quizzaz.TaskSupervisor, terminate_pid)
     {:ok, game_session} = GameSessionServer.get_current_state(session_id)
 
     {:noreply,
@@ -206,8 +205,8 @@ defmodule QuizzazWeb.HostLive.Index do
   defp start_shutdown(socket) do
     pid = self()
 
-    terminate_pid =
-      spawn(fn ->
+    {:ok, terminate_pid} =
+      Task.Supervisor.start_child(Quizzaz.TaskSupervisor, fn ->
         Process.sleep(@terminate_seconds * 1000)
         Process.send(pid, :terminate, [])
       end)

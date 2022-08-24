@@ -1,39 +1,17 @@
 defmodule Quizzaz.GameSessions.RunningSessions do
-  alias :mnesia, as: Mnesia
+  alias Horde.Registry
 
-  def put_session_name(name) do
-    fn -> Mnesia.write({GameSessions, name, name}) end
-    |> Mnesia.transaction()
-    |> case do
-      {:atomic, _} -> :ok
-      {:aborted, _} -> :error
-    end
-  end
-
-  def remove_session_name(name) do
-    fn -> Mnesia.delete({GameSessions, name}) end
-    |> Mnesia.transaction()
-    |> case do
-      {:atomic, _} -> :ok
-      {:aborted, _} -> :error
-    end
+  def list_sessions() do
+    match_pattern = {:"$1", :_, :_}
+    guards = []
+    body = [:"$1"]
+    Registry.select(GameSessionRegistry, [{match_pattern, guards, body}])
   end
 
   def session_exists?(name) do
-    fn -> Mnesia.read({GameSessions, name}) end
-    |> Mnesia.transaction()
-    |> case do
-      {:atomic, []} -> false
+    case Registry.lookup(GameSessionRegistry, name) do
+      [] -> false
       _ -> true
-    end
-  end
-
-  def list_sessions() do
-    fn -> Mnesia.all_keys(GameSessions) end
-    |> Mnesia.transaction()
-    |> case do
-      {:atomic, sessions} -> sessions
-      _ -> []
     end
   end
 end

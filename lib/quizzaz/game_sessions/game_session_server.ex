@@ -86,7 +86,6 @@ defmodule Quizzaz.GameSessions.GameSessionServer do
   end
 
   def handle_cast(:terminate_session, game_session) do
-    Quizzaz.GameSessions.RunningSessions.remove_session_name(game_session.session_id)
     GameSessionPubSub.broadcast_to_session(game_session.session_id, :terminate_game)
     {:stop, :shutdown, game_session}
   end

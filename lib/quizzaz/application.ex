@@ -5,11 +5,8 @@ defmodule Quizzaz.Application do
 
   use Application
 
-  alias :mnesia, as: Mnesia
-
   @impl true
   def start(_type, _args) do
-    start_mnesia()
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
@@ -21,13 +18,13 @@ defmodule Quizzaz.Application do
       {Phoenix.PubSub, name: Quizzaz.PubSub},
       # Start the Endpoint (http/https)
       QuizzazWeb.Endpoint,
+      # Task Supervisor
+      {Task.Supervisor, name: Quizzaz.TaskSupervisor},
       # registry for GameSessions
       {Horde.Registry, keys: :unique, name: GameSessionRegistry},
       # dynamic supervisor for game sessions
       {Horde.DynamicSupervisor, strategy: :one_for_one, name: GameSessionSupervisor},
       {Cluster.Supervisor, [topologies, [name: Quizzaz.ClusterSupervisor]]}
-      # Registry of running game sessions
-      # {Quizzaz.GameSessions.RunningSessionsServer, MapSet.new()},
       # Player Monitor
       # {Quizzaz.GameSessions.PlayerMonitor, %{}}
       # Start a worker by calling: Quizzaz.Worker.start_link(arg)
@@ -38,13 +35,6 @@ defmodule Quizzaz.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Quizzaz.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  def start_mnesia() do
-    Mnesia.stop()
-    Mnesia.create_schema([node()])
-    Mnesia.start()
-    Mnesia.create_table(GameSessions, attributes: [:id, :name])
   end
 
   # Tell Phoenix to update the endpoint configuration
