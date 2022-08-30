@@ -1,0 +1,18 @@
+<div>
+  <%= case @question do %>
+    <% %Quizzaz.Games.Questions.Survey{} = q -> %>
+      <.live_component
+        module={QuizzazWeb.HostLive.SurveyComponent}
+        id="survey-results"
+        question={q}
+        players={@players}
+      />
+    <% %Quizzaz.Games.Questions.Drawing{} -> %>
+      <.live_component
+        module={QuizzazWeb.HostLive.DrawingsComponent}
+        id="player-drawings"
+        players={@players}
+      />
+    <% _ -> %>
+  <% end %>
+</div>

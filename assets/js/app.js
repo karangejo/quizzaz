@@ -25,6 +25,8 @@ import { Socket } from "phoenix"
 import { LiveSocket } from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import drag from "./dragHook"
+import survey from "./surveyHook"
+import drawing from "./drawingHook"
 import Alpine from "alpinejs"
 
 window.Alpine = Alpine
@@ -32,6 +34,8 @@ Alpine.start()
 
 let Hooks = {}
 Hooks.Drag = drag
+Hooks.SurveyHook = survey
+Hooks.DrawingHook = drawing
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {

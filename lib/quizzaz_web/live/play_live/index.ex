@@ -136,31 +136,58 @@ defmodule QuizzazWeb.PlayLive.Index do
     {:noreply, updated_socket}
   end
 
-  def handle_event("answer_question", %{"open_ended_answer" => %{"answer" => answer}}, socket) do
-    GameSessionServer.answer_question(socket.assigns.session_id, socket.assigns.name, answer)
+  def handle_event(
+        "submit_picture",
+        %{"data" => picture},
+        %{assigns: %{session_id: session_id, name: name}} = socket
+      ) do
+    GameSessionServer.answer_question(session_id, name, picture)
     {:noreply, socket |> assign(:state, :answered)}
   end
 
-  def handle_event("answer_question", %{"answer" => answer}, socket) do
-    GameSessionServer.answer_question(socket.assigns.session_id, socket.assigns.name, answer)
+  def handle_event(
+        "answer_question",
+        %{"open_ended_answer" => %{"answer" => answer}},
+        %{assigns: %{session_id: session_id, name: name}} = socket
+      ) do
+    GameSessionServer.answer_question(session_id, name, answer)
     {:noreply, socket |> assign(:state, :answered)}
   end
 
-  def handle_event("answer_scramble_letters", _params, socket) do
+  def handle_event(
+        "answer_question",
+        %{"answer" => answer},
+        %{assigns: %{session_id: session_id, name: name}} = socket
+      ) do
+    GameSessionServer.answer_question(session_id, name, answer)
+    {:noreply, socket |> assign(:state, :answered)}
+  end
+
+  def handle_event(
+        "answer_scramble_letters",
+        _params,
+        %{assigns: %{session_id: session_id, name: name, unscrambled_word: unscrambled_word}} =
+          socket
+      ) do
     GameSessionServer.answer_question(
-      socket.assigns.session_id,
-      socket.assigns.name,
-      socket.assigns.unscrambled_word
+      session_id,
+      name,
+      unscrambled_word
     )
 
     {:noreply, socket |> assign(:state, :answered)}
   end
 
-  def handle_event("answer_scramble_words", _params, socket) do
+  def handle_event(
+        "answer_scramble_words",
+        _params,
+        %{assigns: %{session_id: session_id, name: name, unscrambled_words: unscrambled_words}} =
+          socket
+      ) do
     GameSessionServer.answer_question(
-      socket.assigns.session_id,
-      socket.assigns.name,
-      socket.assigns.unscrambled_words
+      session_id,
+      name,
+      unscrambled_words
     )
 
     {:noreply, socket |> assign(:state, :answered)}
@@ -244,7 +271,7 @@ defmodule QuizzazWeb.PlayLive.Index do
      |> push_patch(to: Routes.play_index_path(socket, :index))}
   end
 
-  def handle_info(unused_message, %{assigs: %{name: name}} = socket) do
+  def handle_info(unused_message, %{assigns: %{name: name}} = socket) do
     Logger.info("unused message from player #{name}: #{inspect(unused_message)}")
     {:noreply, socket}
   end

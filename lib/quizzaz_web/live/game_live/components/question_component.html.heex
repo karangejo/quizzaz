@@ -1,6 +1,54 @@
 <div class="py-4">
   <%= case @current_question_type do %>
-    <% "multiple_choice" -> %>
+    <% "survey" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-survey-question-form"
+        phx-target={@live_target}
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
+      >
+        <%= label(f, :survey_prompt, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :survey_prompt,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :survey_prompt) %>
+
+        <%= label(f, :choice_1, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_1,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :choice_1) %>
+
+        <%= label(f, :choice_2, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_2,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :choice_2) %>
+
+        <%= label(f, :choice_3, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_3,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :choice_3) %>
+
+        <%= label(f, :choice_4, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :choice_4,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :choice_4) %>
+
+        <%= error_tag(f, :choices) %>
+
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <%= add_or_update_icon(@question_action) %>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
+      </.form>
+    <% "multiple choice" -> %>
       <.form
         let={f}
         for={@current_question_changeset}
@@ -55,7 +103,7 @@
           </p>
         </button>
       </.form>
-    <% "scramble_letters" -> %>
+    <% "scramble letters" -> %>
       <.form
         let={f}
         for={@current_question_changeset}
@@ -77,7 +125,7 @@
           </p>
         </button>
       </.form>
-    <% "scramble_words" -> %>
+    <% "scramble words" -> %>
       <.form
         let={f}
         for={@current_question_changeset}
@@ -99,7 +147,29 @@
           </p>
         </button>
       </.form>
-    <% "open_ended" -> %>
+    <% "drawing" -> %>
+      <.form
+        let={f}
+        for={@current_question_changeset}
+        id="add-drawing-question-form"
+        phx-target={@live_target}
+        phx-submit={add_or_update_submit(@question_action)}
+        class="flex flex-col items-start lg:items-center w-full px-4 md:px-12"
+      >
+        <%= label(f, :drawing_prompt, class: "lg:text-2xl pb-2") %>
+        <%= text_input(f, :drawing_prompt,
+          class: "rounded-lg mb-2 md:mb-4 text-skin-input font-bold text-lg w-full"
+        ) %>
+        <%= error_tag(f, :drawing_prompt) %>
+
+        <button type="submit" class="flex lg:flex-col items-center gap-2">
+          <%= add_or_update_icon(@question_action) %>
+          <p class="font-bold text-xl lg:text-2xl">
+            <%= add_or_update_btn(@question_action) %>
+          </p>
+        </button>
+      </.form>
+    <% "open ended" -> %>
       <.form
         let={f}
         for={@current_question_changeset}

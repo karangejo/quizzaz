@@ -87,6 +87,9 @@
         <p class="self-start"><%= index %>)</p>
         <div class="flex flex-col items-center gap-2 mb-4">
           <%= case question do %>
+            <% %Survey{survey_prompt: prompt, choices: _choices} -> %>
+              <p><%= prompt %></p>
+              <p class="font-normal">survey</p>
             <% %MultipleChoice{answer: _answer, prompt: prompt, choices: _choices} -> %>
               <p><%= prompt %></p>
               <p class="font-normal">multiple choice</p>
@@ -96,6 +99,9 @@
             <% %ScrambleWords{answer_list: answer_list, scrambled_list: _scrambled} -> %>
               <p><%= Enum.join(answer_list, " ") %></p>
               <p class="font-normal">scramble words</p>
+            <% %Drawing{drawing_prompt: prompt} -> %>
+              <p><%= prompt %></p>
+              <p class="font-normal">drawing</p>
             <% %OpenEnded{prompt: prompt} -> %>
               <p><%= prompt %></p>
               <p class="font-normal">open ended</p>

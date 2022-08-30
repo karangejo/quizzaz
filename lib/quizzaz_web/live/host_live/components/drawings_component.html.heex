@@ -1,0 +1,12 @@
+<div class="flex flex-row items-center flex-wrap px-8">
+  <%= for player <- @players do %>
+    <div class="flex flex-col items-center w-1/2 px-4">
+      <p class="pb-4 text-skin-secondary"><%= player.name %></p>
+      <img
+        class="bg-white rounded-xl"
+        src={Quizzaz.GameSessions.Player.get_last_answer(player)}
+        alt="a player drawing"
+      />
+    </div>
+  <% end %>
+</div>

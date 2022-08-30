@@ -4,12 +4,24 @@ defmodule Quizzaz.Games.Question do
   import PolymorphicEmbed, only: [cast_polymorphic_embed: 3]
 
   alias Quizzaz.Games.Game
-  alias Quizzaz.Games.Questions.MultipleChoice
-  alias Quizzaz.Games.Questions.OpenEnded
-  alias Quizzaz.Games.Questions.ScrambleWords
-  alias Quizzaz.Games.Questions.ScrambleLetters
 
-  @question_types [:"multiple choice", :"open ended", :"scramble words", :"scramble letters"]
+  alias Quizzaz.Games.Questions.{
+    Survey,
+    MultipleChoice,
+    OpenEnded,
+    ScrambleWords,
+    ScrambleLetters,
+    Drawing
+  }
+
+  @question_types [
+    :"multiple choice",
+    :"open ended",
+    :"scramble words",
+    :"scramble letters",
+    :survey,
+    :drawing
+  ]
 
   def question_types, do: @question_types
 
@@ -18,6 +30,14 @@ defmodule Quizzaz.Games.Question do
 
     field :content, PolymorphicEmbed,
       types: [
+        drawing: [
+          module: Drawing,
+          identify_by_fields: [:drawing_prompt]
+        ],
+        survey: [
+          module: Survey,
+          identify_by_fields: [:survey_prompt, :choices]
+        ],
         multiple_choice: [
           module: MultipleChoice,
           identify_by_fields: [:answer, :prompt, :choices]

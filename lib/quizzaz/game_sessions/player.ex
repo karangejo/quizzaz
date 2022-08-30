@@ -18,4 +18,8 @@ defmodule Quizzaz.GameSessions.Player do
       answers: []
     }
   end
+
+  def get_last_answer(%__MODULE__{answers: answers}) do
+    Enum.at(answers, -1)
+  end
 end

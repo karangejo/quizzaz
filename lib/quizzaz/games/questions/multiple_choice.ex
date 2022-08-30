@@ -17,16 +17,22 @@ defmodule Quizzaz.Games.Questions.MultipleChoice do
   end
 
   defp validate_answer_in_choices(changeset) do
-    choices = length(get_field(changeset, :choices))
+    choices = get_field(changeset, :choices)
 
-    changeset
-    |> validate_change(:answer, fn :answer, answer ->
-      if answer > 0 and answer <= choices do
-        []
-      else
-        [message: "Answer must be within the range of choices"]
-      end
-    end)
+    if is_nil(choices) do
+      changeset
+    else
+      choices_length = length(choices)
+
+      changeset
+      |> validate_change(:answer, fn :answer, answer ->
+        if answer > 0 and answer <= choices_length do
+          []
+        else
+          [message: "Answer must be within the range of choices"]
+        end
+      end)
+    end
   end
 
   def add_choices(%__MODULE__{choices: choices} = mp) do

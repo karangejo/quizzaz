@@ -55,10 +55,14 @@
         </div>
         <%= if @question != %{} do %>
           <%= case @question do %>
+            <% %Quizzaz.Games.Questions.Survey{} = q -> %>
+              <h4 class="text-5xl"><%= q.survey_prompt %></h4>
             <% %Quizzaz.Games.Questions.MultipleChoice{} = q -> %>
               <h4 class="text-5xl"><%= q.prompt %></h4>
             <% %Quizzaz.Games.Questions.OpenEnded{} = q -> %>
               <h4 class="text-5xl"><%= q.prompt %></h4>
+            <% %Quizzaz.Games.Questions.Drawing{} = q -> %>
+              <h4 class="text-5xl"><%= q.drawing_prompt %></h4>
             <% %Quizzaz.Games.Questions.ScrambleLetters{} -> %>
               <h4 class="text-5xl">Unscramble</h4>
             <% %Quizzaz.Games.Questions.ScrambleWords{} -> %>
@@ -109,6 +113,12 @@
 
           <p class="font-bold text-xl lg:text-3xl">Next Question</p>
         </button>
+        <.live_component
+          module={QuizzazWeb.HostLive.QuestionComponent}
+          id="question-components"
+          question={@question}
+          players={@players}
+        />
         <div class="flex flex-row items-center flex-wrap justify-around gap-8 mt-8">
           <%= for player <- @players do %>
             <div class="w-1/4 flex flex-col items-start gap-2 p-4 px-20 text-skin-secondary">
@@ -121,14 +131,6 @@
     <% :finished -> %>
       <div class="flex flex-col w-3/4 items-center gap-4 justify-around my-12 mx-20 bg-skin-secondary rounded-lg py-8 text-skin-primary font-bold">
         <h3 class="text-5xl">Game is finished</h3>
-        <div class="flex flex-row items-center flex-wrap justify-around gap-8 mt-8">
-          <%= for player <- @players do %>
-            <div class="w-1/4 flex flex-col items-start gap-2 p-4 px-20 text-skin-secondary">
-              <p class="text-3xl"><%= player.name %></p>
-              <p class="text-xl">score: <%= player.score %></p>
-            </div>
-          <% end %>
-        </div>
         <button phx-click="reset_game" class="m-4 flex flex-col items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -144,9 +146,22 @@
               d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
             />
           </svg>
-
           <p class="font-bold text-xl lg:text-3xl">Play again</p>
         </button>
+        <.live_component
+          module={QuizzazWeb.HostLive.QuestionComponent}
+          id="question-components"
+          question={@question}
+          players={@players}
+        />
+        <div class="flex flex-row items-center flex-wrap justify-around gap-8 mt-8">
+          <%= for player <- @players do %>
+            <div class="w-1/4 flex flex-col items-start gap-2 p-4 px-20 text-skin-secondary">
+              <p class="text-3xl"><%= player.name %></p>
+              <p class="text-xl">score: <%= player.score %></p>
+            </div>
+          <% end %>
+        </div>
       </div>
   <% end %>
 </div>

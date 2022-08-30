@@ -3,7 +3,16 @@ defmodule QuizzazWeb.GameLive.FormComponent do
 
   alias Quizzaz.Games
   alias QuizzazWeb.GameLive.Schemas.AddQuestion
-  alias Quizzaz.Games.Questions.{ScrambleLetters, ScrambleWords, MultipleChoice, OpenEnded}
+
+  alias Quizzaz.Games.Questions.{
+    ScrambleLetters,
+    ScrambleWords,
+    MultipleChoice,
+    OpenEnded,
+    Survey,
+    Drawing
+  }
+
   alias Quizzaz.Games.Question
 
   @impl true
@@ -39,6 +48,41 @@ defmodule QuizzazWeb.GameLive.FormComponent do
      |> assign(:current_question_type, nil)
      |> assign(:question_action, nil)
      |> assign(:current_question_changeset, nil)}
+  end
+
+  def handle_event(
+        "update_question",
+        %{"drawing" => %{"drawing_prompt" => prompt}},
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    question = %{drawing_prompt: prompt}
+
+    changeset =
+      question
+      |> Drawing.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
   end
 
   def handle_event(
@@ -149,6 +193,50 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   def handle_event(
         "update_question",
         %{
+          "survey" => %{
+            "survey_prompt" => prompt,
+            "choice_1" => c_1,
+            "choice_2" => c_2,
+            "choice_3" => c_3,
+            "choice_4" => c_4
+          }
+        },
+        %{assigns: %{edit_question_index: index}} = socket
+      ) do
+    choices = [c_1, c_2, c_3, c_4] |> Enum.reject(fn choice -> choice == "" end)
+    question = %{survey_prompt: prompt, choices: choices}
+
+    changeset =
+      question
+      |> Survey.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, List.replace_at(socket.assigns.questions, index, question))
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+        |> assign(:question_action, nil)
+        |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
+  def handle_event(
+        "update_question",
+        %{
           "multiple_choice" => %{
             "prompt" => prompt,
             "answer" => answer,
@@ -179,6 +267,35 @@ defmodule QuizzazWeb.GameLive.FormComponent do
         |> assign(:current_question_changeset, nil)
         |> assign(:question_action, nil)
         |> put_flash(:info, "Question updated")
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
+  def handle_event("add_question", %{"drawing" => %{"drawing_prompt" => prompt}}, socket) do
+    question = %{drawing_prompt: prompt}
+
+    changeset =
+      question
+      |> Drawing.changeset()
+
+    updated_socket =
+      if changeset.valid? do
+        question =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, socket.assigns.questions ++ [question])
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
       else
         socket
         |> assign(
@@ -286,6 +403,45 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   def handle_event(
         "add_question",
         %{
+          "survey" => %{
+            "survey_prompt" => prompt,
+            "choice_1" => c_1,
+            "choice_2" => c_2,
+            "choice_3" => c_3,
+            "choice_4" => c_4
+          }
+        },
+        socket
+      ) do
+    choices = [c_1, c_2, c_3, c_4] |> Enum.reject(fn choice -> choice == "" end)
+    question = %{survey_prompt: prompt, choices: choices}
+    survey_changeset = Survey.changeset(question)
+
+    updated_socket =
+      if survey_changeset.valid? do
+        question =
+          survey_changeset
+          |> Ecto.Changeset.apply_changes()
+
+        socket
+        |> assign(:questions, socket.assigns.questions ++ [question])
+        |> assign(:current_question_type, nil)
+        |> assign(:current_question_changeset, nil)
+      else
+        socket
+        |> assign(
+          :current_question_changeset,
+          survey_changeset
+          |> Map.put(:action, :validate)
+        )
+      end
+
+    {:noreply, updated_socket}
+  end
+
+  def handle_event(
+        "add_question",
+        %{
           "multiple_choice" => %{
             "prompt" => prompt,
             "answer" => answer,
@@ -330,6 +486,12 @@ defmodule QuizzazWeb.GameLive.FormComponent do
       ) do
     current_question_changeset =
       case question_type do
+        "survey" ->
+          Survey.changeset(%{})
+
+        "drawing" ->
+          Drawing.changeset(%{})
+
         "multiple choice" ->
           MultipleChoice.changeset(%{})
 
@@ -384,31 +546,44 @@ defmodule QuizzazWeb.GameLive.FormComponent do
 
     {question_type, changeset} =
       case question do
+        %Survey{} = q ->
+          {"survey",
+           q
+           |> Survey.add_choices()
+           |> Map.from_struct()
+           |> Survey.changeset()}
+
         %MultipleChoice{} = q ->
-          {"multiple_choice",
+          {"multiple choice",
            q
            |> MultipleChoice.add_choices()
            |> Map.from_struct()
            |> MultipleChoice.changeset()}
 
         %ScrambleLetters{} = q ->
-          {"scramble_letters",
+          {"scramble letters",
            q
            |> Map.from_struct()
            |> ScrambleLetters.changeset()}
 
         %ScrambleWords{} = q ->
-          {"scramble_words",
+          {"scramble words",
            q
            |> ScrambleWords.answer_list_to_text()
            |> Map.from_struct()
            |> ScrambleWords.changeset()}
 
         %OpenEnded{} = q ->
-          {"open_ended",
+          {"open ended",
            q
            |> Map.from_struct()
            |> OpenEnded.changeset()}
+
+        %Drawing{} = q ->
+          {"drawing",
+           q
+           |> Map.from_struct()
+           |> Drawing.changeset()}
       end
 
     {:noreply,
@@ -466,10 +641,6 @@ defmodule QuizzazWeb.GameLive.FormComponent do
     end
   end
 
-  # def handle_event("save", %{"game" => game_params}, socket) do
-  #   save_game(socket, socket.assigns.action, game_params)
-  # end
-
   defp save_game(socket, :edit, game_params, questions) do
     with {:ok, game} <- Games.update_game(socket.assigns.game, game_params),
          {:ok, _} <- Games.update_questions(game.id, questions) do
@@ -482,17 +653,4 @@ defmodule QuizzazWeb.GameLive.FormComponent do
         {:noreply, assign(socket, :changeset, changeset)}
     end
   end
-
-  # defp save_game(socket, :new, game_params) do
-  #   case Games.create_game(game_params) do
-  #     {:ok, _game} ->
-  #       {:noreply,
-  #        socket
-  #        |> put_flash(:info, "Game created successfully")
-  #        |> push_redirect(to: socket.assigns.return_to)}
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       {:noreply, assign(socket, changeset: changeset)}
-  #   end
-  # end
 end

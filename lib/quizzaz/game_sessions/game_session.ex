@@ -2,7 +2,15 @@ defmodule Quizzaz.GameSessions.GameSession do
   alias Quizzaz.GameSessions.Player
   alias Quizzaz.Games.Game
   alias Quizzaz.Repo
-  alias Quizzaz.Games.Questions.{MultipleChoice, OpenEnded, ScrambleWords, ScrambleLetters}
+
+  alias Quizzaz.Games.Questions.{
+    MultipleChoice,
+    OpenEnded,
+    ScrambleWords,
+    ScrambleLetters,
+    Survey,
+    Drawing
+  }
 
   @points_per_second 2000
   @wrong_answer_points 2000
@@ -203,6 +211,12 @@ defmodule Quizzaz.GameSessions.GameSession do
       %MultipleChoice{} = q ->
         q.answer == String.to_integer(answer)
 
+      %Drawing{} ->
+        true
+
+      %Survey{} = q ->
+        answer in q.choices
+
       %OpenEnded{} = _q ->
         not is_nil(answer)
 
@@ -262,6 +276,6 @@ defmodule Quizzaz.GameSessions.GameSession do
   end
 
   def sort_players(players_list) do
-    Enum.sort_by(players_list, fn %Player{score: score} -> score end)
+    Enum.sort_by(players_list, fn %Player{score: score} -> score end, &Kernel.>=/2)
   end
 end
