@@ -73,6 +73,15 @@ jobs:
 
     - name: Check Formatting
       run: mix format --check-formatted
+    
+    - name: Check code quality with credo
+      run: mix credo --strict
+
+    - name: Sobelow security vulnerability check
+      uses: sobelow/action@v1
+
+    - name: Verify migrations
+      run: mix ecto.create && mix ecto.migrate && mix ecto.rollback --all
 
     - name: Run tests
       run: mix test
