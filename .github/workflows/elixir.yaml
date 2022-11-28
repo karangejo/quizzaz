@@ -71,11 +71,11 @@ jobs:
     - name: Compiles without warnings
       run: mix compile --warnings-as-errors
 
-    - name: Check Formatting
-      run: mix format --check-formatted
+    # - name: Check Formatting
+    #   run: mix format --check-formatted
     
-    - name: Check code quality with credo
-      run: mix credo --strict
+    # - name: Check code quality with credo
+    #  run: mix credo --strict
 
     - name: Sobelow security vulnerability check
       uses: sobelow/action@v1
