@@ -55,7 +55,8 @@ defmodule Quizzaz.MixProject do
       {:tailwind, "~> 0.1.5"},
       {:horde, "~> 0.8.7"},
       {:kino, "~> 0.6.2", only: :dev},
-      {:libcluster, "~> 3.3"}
+      {:libcluster, "~> 3.3"},
+      {:sobelow, "~> 0.8", only: :dev}
     ]
   end
 
