@@ -4,7 +4,7 @@
       Sign up to start creating your own games!
     </h2>
     <.form
-      let={f}
+      :let={f}
       for={@changeset}
       action={Routes.user_registration_path(@conn, :create)}
       class="flex flex-col lg:items-center w-full"

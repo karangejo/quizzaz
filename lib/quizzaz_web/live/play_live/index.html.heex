@@ -3,7 +3,7 @@
     <% :not_joined -> %>
       <div class="flex flex-col w-3/4 items-center gap-4 justify-around mx-20 bg-skin-secondary rounded-lg py-8 text-skin-primary font-bold mt-20">
         <.form
-          let={f}
+          :let={f}
           for={@join_changeset}
           phx-change="validate"
           phx-submit="join"
@@ -107,7 +107,7 @@
             <p class="font-bold text-xl lg:text-3xl text-skin-primary">Submit Drawing</p>
           </button>
         <% %Quizzaz.Games.Questions.OpenEnded{} -> %>
-          <.form let={f} for={:open_ended_answer} phx-submit="answer_question">
+          <.form :let={f} for={:open_ended_answer} phx-submit="answer_question">
             <div class="flex flex-col items-center gap-4 my-4 lg:my-12 text-skin-primary font-bold">
               <%= label(f, :answer, "Write your answer below:",
                 class: "text-xl lg:text-3xl lg:pb-4"

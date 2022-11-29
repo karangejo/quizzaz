@@ -16,6 +16,7 @@ defmodule QuizzazWeb do
   below. Instead, define any helper function in modules
   and import those modules here.
   """
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def controller do
     quote do
@@ -24,6 +25,7 @@ defmodule QuizzazWeb do
       import Plug.Conn
       import QuizzazWeb.Gettext
       alias QuizzazWeb.Router.Helpers, as: Routes
+      unquote(verified_routes())
     end
   end
 
@@ -45,7 +47,7 @@ defmodule QuizzazWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {QuizzazWeb.LayoutView, "live.html"}
+        layout: {QuizzazWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end
@@ -90,7 +92,7 @@ defmodule QuizzazWeb do
       use Phoenix.HTML
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
       import QuizzazWeb.LiveHelpers
 
       # Import basic rendering functionality (render, render_layout, etc)
@@ -99,6 +101,16 @@ defmodule QuizzazWeb do
       import QuizzazWeb.ErrorHelpers
       import QuizzazWeb.Gettext
       alias QuizzazWeb.Router.Helpers, as: Routes
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: QuizzazWeb.Endpoint,
+        router: QuizzazWeb.Router,
+        statics: QuizzazWeb.static_paths()
     end
   end
 

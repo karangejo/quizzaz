@@ -28,6 +28,7 @@ defmodule QuizzazWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint QuizzazWeb.Endpoint
+      use QuizzazWeb, :verified_routes
     end
   end
 

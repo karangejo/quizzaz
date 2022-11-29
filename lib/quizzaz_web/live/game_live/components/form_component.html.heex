@@ -1,6 +1,6 @@
 <div x-data="{'showModal': false}" class="flex flex-col items-center w-full">
   <.form
-    let={f}
+    :let={f}
     for={@changeset}
     id="game-form"
     phx-target={@myself}
@@ -20,7 +20,7 @@
   </.form>
 
   <.form
-    let={f}
+    :let={f}
     for={@add_question_changeset}
     phx-target={@myself}
     phx-change="choose_question_type"
@@ -62,7 +62,7 @@
       class="overflow-auto"
       style="background-color: rgba(0,0,0,0.5)"
       x-show="showModal"
-      :class="{ 'fixed inset-0 z-10 flex items-center justify-center': showModal }"
+      x-bind:class="{ 'fixed inset-0 z-10 flex items-center justify-center': showModal }"
     >
       <div
         x-show="showModal"

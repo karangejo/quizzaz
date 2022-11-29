@@ -2,7 +2,7 @@
   <%= case @current_question_type do %>
     <% "survey" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-survey-question-form"
         phx-target={@live_target}
@@ -50,7 +50,7 @@
       </.form>
     <% "multiple choice" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-mc-question-form"
         phx-target={@live_target}
@@ -105,7 +105,7 @@
       </.form>
     <% "scramble letters" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-sl-question-form"
         phx-target={@live_target}
@@ -127,7 +127,7 @@
       </.form>
     <% "scramble words" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-sw-question-form"
         phx-target={@live_target}
@@ -149,7 +149,7 @@
       </.form>
     <% "drawing" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-drawing-question-form"
         phx-target={@live_target}
@@ -171,7 +171,7 @@
       </.form>
     <% "open ended" -> %>
       <.form
-        let={f}
+        :let={f}
         for={@current_question_changeset}
         id="add-oe-question-form"
         phx-target={@live_target}

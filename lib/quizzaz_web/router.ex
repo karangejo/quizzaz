@@ -14,7 +14,7 @@ defmodule QuizzazWeb.Router do
     plug QuizzazWeb.Themes, "grapes"
   end
 
-  pipeline :root_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :root})
+  pipeline :site_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :root})
   pipeline :game_layout, do: plug(:put_root_layout, {QuizzazWeb.LayoutView, :game})
 
   pipeline :api do
@@ -22,7 +22,7 @@ defmodule QuizzazWeb.Router do
   end
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :root_layout]
+    pipe_through [:browser, :site_layout]
 
     # get "/", PageController, :index
     get "/", PageController, :home
@@ -45,7 +45,7 @@ defmodule QuizzazWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through [:browser, :root_layout]
+      pipe_through [:browser, :site_layout]
 
       live_dashboard "/dashboard", metrics: QuizzazWeb.Telemetry
     end
@@ -57,7 +57,7 @@ defmodule QuizzazWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through [:browser, :root_layout]
+      pipe_through [:browser, :site_layout]
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
@@ -66,7 +66,7 @@ defmodule QuizzazWeb.Router do
   ## Authentication routes
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated, :root_layout]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :site_layout]
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -79,7 +79,7 @@ defmodule QuizzazWeb.Router do
   end
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :require_authenticated_user, :root_layout]
+    pipe_through [:browser, :require_authenticated_user, :site_layout]
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
@@ -94,7 +94,7 @@ defmodule QuizzazWeb.Router do
   end
 
   scope "/", QuizzazWeb do
-    pipe_through [:browser, :root_layout]
+    pipe_through [:browser, :site_layout]
 
     delete "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new
